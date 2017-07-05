@@ -21,7 +21,7 @@ const NAMEFILE = {
 };
 
 const SETTINGS = {
-	outputDir: __dirname + '/data/'
+	outputDir: __dirname + '/../../../data/'
 };
 
 module.exports.SETTINGS = SETTINGS;

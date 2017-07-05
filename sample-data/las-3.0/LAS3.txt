@@ -1,0 +1,3 @@
+Liên quan đến file LAS 3.0 Trước đây chúng em có làm việc với nhóm I2G cũ thì đã thống nhất file LAS 3.0 có 2 kiểu chính:
+ - 1 là data phân cách nhau bởi dấu phẩy "," ( IP, Geolog LAS 3.0 follow theo forrmat này)
+ - 2 là data phân cahcs nhau bởi dấu "Space"  (Techlog LAS 3.0 follow theo forrmat này

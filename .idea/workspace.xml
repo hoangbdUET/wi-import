@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="72d8612b-ffee-481a-a9a4-434c67a98104" name="Default" comment="" />
+    <list default="true" id="72d8612b-ffee-481a-a9a4-434c67a98104" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorAsc.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas2.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas3.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.test.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/extractors/ascii-extractor.js" afterPath="$PROJECT_DIR$/source/extractors/ascii-extractor.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/extractors/las-extractor.js" afterPath="$PROJECT_DIR$/source/extractors/las-extractor.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/extractors/wlog/wlog.config.js" afterPath="$PROJECT_DIR$/source/extractors/wlog/wlog.config.js" />
+    </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -15,46 +25,39 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="wlog-extractor.test.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.test.js">
+      <file leaf-file-name="las-extractor.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/extractors/las-extractor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="input.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/input.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="19" lean-forward="false" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/test.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="2" lean-forward="true" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ascii-extractor.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/source/extractors/ascii-extractor.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="105" column="30" lean-forward="true" selection-start-line="105" selection-start-column="30" selection-end-line="105" selection-end-column="30" />
+            <state relative-caret-position="275">
+              <caret line="31" column="17" lean-forward="false" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
               <folding>
-                <element signature="n#!!block;n#writeToFile#0" expanded="false" />
-                <element signature="n#!!block;n#__extractFromASC#0" expanded="false" />
-                <element signature="n#!!block;n#extractFromASC#0" expanded="false" />
+                <element signature="n#!!block;n#writeToCurveFile#0" expanded="false" />
+                <element signature="n#!!block;n#extractCurvesFromLAS#0" expanded="false" />
+                <element signature="n#!!block;n#__extractWellFromLAS2#0" expanded="false" />
+                <element signature="n#!!block;n#extractWellFromLAS2#0" expanded="false" />
+                <element signature="n#!!block;n#writeToWellFromLAS3#0" expanded="false" />
+                <element signature="n#!!block;n#extractWellFromLAS3#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="1X_geolog_30.las" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sample-data/las-3.0/1X_geolog_30.las">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-204">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="wlog-extractorLas3.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas3.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="47" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -93,6 +96,9 @@
       <replace>curveNames</replace>
       <replace>DIR</replace>
     </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -133,16 +139,21 @@
         <option value="$PROJECT_DIR$/WI format import file/WI format import file/2. ASCII/Merge_File.asc" />
         <option value="$PROJECT_DIR$/WI format import file/WI format import file/2. ASCII/02_97_DD_1X.asc" />
         <option value="$PROJECT_DIR$/source/extractors/wlog/data/Azimuth" />
-        <option value="$PROJECT_DIR$/source/extractors/las-extractor.js" />
         <option value="$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.js" />
-        <option value="$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.test.js" />
         <option value="$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_BIT" />
         <option value="$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Azimuth" />
-        <option value="$PROJECT_DIR$/source/extractors/ascii-extractor.js" />
         <option value="$PROJECT_DIR$/source/extractors/wlog/url.config.js" />
         <option value="$PROJECT_DIR$/source/extractors/wlog/asciiAsync.js" />
         <option value="$PROJECT_DIR$/test/input.txt" />
         <option value="$PROJECT_DIR$/test/test.js" />
+        <option value="$PROJECT_DIR$/source/extractors/ascii-extractor.js" />
+        <option value="$PROJECT_DIR$/source/extractors/wlog/wlog.config.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.test.js" />
+        <option value="$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas2.js" />
+        <option value="$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorAsc.js" />
+        <option value="$PROJECT_DIR$/source/extractors/las-extractor.js" />
+        <option value="$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas3.js" />
       </list>
     </option>
   </component>
@@ -176,36 +187,138 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WellLogImport" />
+              <option name="myItemId" value="wi-import" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WellLogImport" />
+              <option name="myItemId" value="wi-import" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WellLogImport" />
+              <option name="myItemId" value="wi-import" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WellLogImport" />
+              <option name="myItemId" value="wi-import" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="extractors" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="extractors" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wlog" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="extractors" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wlog" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wlog-test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sample-data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="las-3.0" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sample-data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wi-import" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sample-data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ascii" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -216,7 +329,7 @@
     <property name="node.js.path.for.package.stylelint" value="project" />
     <property name="node.js.selected.package.stylelint" value="" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="D:/wi-backend" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="javascript.nodejs.core.library.configured.version" value="8.1.1" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
   </component>
@@ -330,11 +443,12 @@
       <workItem from="1499134535544" duration="150000" />
       <workItem from="1499134706595" duration="29652000" />
       <workItem from="1499222196101" duration="20422000" />
+      <workItem from="1499250909530" duration="1698000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="134842000" />
+    <option name="totallyTimeSpent" value="136540000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
@@ -342,10 +456,10 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850242" sideWeight="0.5029762" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850242" sideWeight="0.49702382" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850242" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32850242" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3993559" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -390,371 +504,70 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package-lock.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-357">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/sequelize/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-430">
-          <caret line="65" column="23" lean-forward="false" selection-start-line="65" selection-start-column="23" selection-end-line="65" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/Las 3.0/1X_Techlog_30.las">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1071">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/Las 3.0/1X_IP_30.las">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="38" lean-forward="false" selection-start-line="24" selection-start-column="38" selection-end-line="24" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/Las 3.0/Las3_W4.las">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="64" column="45" lean-forward="false" selection-start-line="64" selection-start-column="45" selection-end-line="64" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/8. Well_header/martin.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/9. welltop/ExportTopsToColumns.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/9. welltop/ExportTopsToRows.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/9. welltop/ExportTopsToSingleColumn.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/3. Core_Data/Coredata3Wells.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/2. ASCII/02_97_DD_1X.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="43" lean-forward="false" selection-start-line="1" selection-start-column="43" selection-end-line="1" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/9. welltop/Welltop_Petrel.ASCII">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/UWI">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-106861">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Zoneset_Zone_BB">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-106861">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/2. ASCII/02_97_DD_1X.asc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="40" lean-forward="false" selection-start-line="1" selection-start-column="40" selection-end-line="1" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Azimuth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-106861">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Depth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-106861">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Merge_File_Azimuth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-372316">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Merge_File_UWI">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-107052">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Merge_File_Zoneset_Zone_BB">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-372316">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/102_97_DD_1X_Azimuth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-106861">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/las-extractor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="281" column="57" lean-forward="false" selection-start-line="281" selection-start-column="57" selection-end-line="281" selection-end-column="57" />
-          <folding>
-            <element signature="n#!!block;n#writeToCurveFile#0" expanded="false" />
-            <element signature="n#!!block;n#__extractCurvesFromLAS#0" expanded="false" />
-            <element signature="n#!!block;n#extractCurvesFromLAS#0" expanded="false" />
-            <element signature="n#!!block;n#__extractWellFromLAS2#0" expanded="false" />
-            <element signature="n#!!block;n#extractWellFromLAS2#0" expanded="false" />
-            <element signature="n#!!block;n#writeToWellFromLAS3#0" expanded="false" />
-            <element signature="n#!!block;n#__extractWellFromLAS3#0" expanded="false" />
-            <element signature="n#!!block;n#extractWellFromLAS3#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_UWI">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Merge_File_UWI" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Merge_File_Zoneset_Zone_BB" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/102_97_DD_1X_Azimuth" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_UWI" />
     <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="60" lean-forward="false" selection-start-line="9" selection-start-column="60" selection-end-line="9" selection-end-column="60" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_Depth">
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_Depth" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/Merge_File.asc" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/102_97_DD_1X_Depth" />
+    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/2. ASCII/Merge_File.asc" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CLST3" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CLST1" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CLSTT2" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CNC" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_DTCO3" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_UWI" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Depth" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Zoneset_Zone_BB" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/02_97_DD_1X.asc" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_BIT" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Azimuth" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/Merge_File.asc" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_BIT" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_C1" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_Azimuth" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_C1" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/asciiAsync.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-264961">
+        <state relative-caret-position="157">
+          <caret line="128" column="29" lean-forward="false" selection-start-line="128" selection-start-column="29" selection-end-line="128" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/input.txt" />
+    <entry file="file://$PROJECT_DIR$/test/test.js" />
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/Las2_W4_Las2_W4.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/Merge_File.asc">
+    <entry file="file://$PROJECT_DIR$/source/extractors/ascii-extractor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5282">
-          <caret line="6003" column="17" lean-forward="false" selection-start-line="6003" selection-start-column="17" selection-end-line="6003" selection-end-column="17" />
-          <folding />
+        <state relative-caret-position="221">
+          <caret line="103" column="1" lean-forward="false" selection-start-line="103" selection-start-column="1" selection-end-line="103" selection-end-column="1" />
+          <folding>
+            <element signature="n#!!block;n#writeToFile#0" expanded="false" />
+            <element signature="n#!!block;n#__extractFromASC#0" expanded="false" />
+            <element signature="n#!!block;n#extractFromASC#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/102_97_DD_1X_Depth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-106861">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WI format import file/WI format import file/2. ASCII/Merge_File.asc">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
-          <caret line="3" column="9" lean-forward="false" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CLST3">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CLST1">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CLSTT2">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_CNC">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_DTCO3">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_UWI">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Depth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Zoneset_Zone_BB">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/02_97_DD_1X.asc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="27" lean-forward="false" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_BIT">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_Azimuth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/Merge_File.asc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_BIT">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_C1">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/2Merge_File_Azimuth">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/data/1Merge_File_C1">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="3" column="4" lean-forward="false" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
           <folding />
         </state>
       </provider>
@@ -767,49 +580,161 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/ascii-extractor.js">
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog.config.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="105" column="30" lean-forward="true" selection-start-line="105" selection-start-column="30" selection-end-line="105" selection-end-column="30" />
-          <folding>
-            <element signature="n#!!block;n#writeToFile#0" expanded="false" />
-            <element signature="n#!!block;n#__extractFromASC#0" expanded="false" />
-            <element signature="n#!!block;n#extractFromASC#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="391">
+          <caret line="23" column="32" lean-forward="false" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/asciiAsync.js">
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorAsc.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="128" column="29" lean-forward="false" selection-start-line="128" selection-start-column="29" selection-end-line="128" selection-end-column="29" />
-          <folding>
-            <element signature="n#!!block;n#writeToFile#0" expanded="false" />
-            <element signature="n#!!block;n#__extractFromASCAsync#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="85">
+          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="60" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-extractor.test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        <state relative-caret-position="153">
+          <caret line="9" column="25" lean-forward="false" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/input.txt">
+    <entry file="file://$PROJECT_DIR$/data/1X_IP_30_1X_IP_30.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="19" lean-forward="false" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test.js">
+    <entry file="file://$PROJECT_DIR$/data/1X_IP_30_~IPCURVES_DEFINITION_DEPTH">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="2" lean-forward="true" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="2" />
+        <state relative-caret-position="-106878">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/1X_Techlog_30_cii">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/Las3_W4_~IPCURVES_DEFINITION_ACTECDM">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/Las2_W4_Las2_W4.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/Las3_W4_Las3_W4.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/02_97_TL_3X_02_97_TL_3X.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/1X_Techlog_30_1X_Techlog_30.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample-data/las-3.0/LAS3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample-data/las-3.0/1X_Techlog_30.las">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1173">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample-data/las-3.0/1X_IP_30.las">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-765">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/1X_geolog_30_1X_geolog_30.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample-data/las-3.0/1X_geolog_30.las">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-204">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/extractors/las-extractor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="31" column="17" lean-forward="false" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!block;n#writeToCurveFile#0" expanded="false" />
+            <element signature="n#!!block;n#extractCurvesFromLAS#0" expanded="false" />
+            <element signature="n#!!block;n#__extractWellFromLAS2#0" expanded="false" />
+            <element signature="n#!!block;n#extractWellFromLAS2#0" expanded="false" />
+            <element signature="n#!!block;n#writeToWellFromLAS3#0" expanded="false" />
+            <element signature="n#!!block;n#extractWellFromLAS3#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/extractors/wlog/wlog-test/wlog-extractorLas3.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="47" />
           <folding />
         </state>
       </provider>

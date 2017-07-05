@@ -103,7 +103,4 @@ function extractFromASC(inputURL) {
     __extractFromASC(inputURL, fileName);
 }
 
-console.time('Runtime is : ');
-let url = process.argv[2];
-extractFromASC(url);
 module.exports.extractFromASC = extractFromASC;

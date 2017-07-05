@@ -6,7 +6,7 @@ let fs = require('fs');
 let wlogConfig = require('./wlog/wlog.config');
 let Settings = wlogConfig.SETTINGS;
 let outputDir  = Settings.outputDir;
-let pathFile = new Array();
+
 
 function writeToCurveFile(buffer, curveFileName, index, value){
     buffer.count += 1;
@@ -29,7 +29,7 @@ function __extractCurvesFromLAS(inputURL, fileName) {
         line = line.trim();
         line = line.replace(/\s+\s/g, " ");
 
-        if (/^~A|^~ASCII/.test(line.toUpperCase())) {
+        if (/^~A |^~ASCII/.test(line.toUpperCase())) {
             line = line.slice(3);
             curveNames = line.split(" ");
             curveNames.forEach(function (curveName) {
@@ -43,17 +43,23 @@ function __extractCurvesFromLAS(inputURL, fileName) {
         }
         else if (/^[0-9]/.test(line)) {
             let fields = line.split(" ");
-            curveNames.forEach(function (curveName, i) {
-                writeToCurveFile(BUFFERS[curveName], DIR + curveName, count, fields[i]);
-            });
-            count++;
+            if(curveNames) {
+                curveNames.forEach(function (curveName, i) {
+                    writeToCurveFile(BUFFERS[curveName], DIR + curveName, count, fields[i]);
+                });
+                count++;
+            }
+
         }
     });
     rl.on('end', function () {
-        curveNames.forEach(function(curveName) {
-            //flushToCurveFile(BUFFERS[curveName], outputDir + curveName);
-            fs.appendFileSync(DIR + curveName, BUFFERS[curveName].data);
-        });
+        if(curveNames) {
+            curveNames.forEach(function(curveName) {
+                //flushToCurveFile(BUFFERS[curveName], outputDir + curveName);
+                fs.appendFileSync(DIR + curveName, BUFFERS[curveName].data);
+            });
+        }
+
         console.log("ExtractCurvesFromLAS done");
     });
 

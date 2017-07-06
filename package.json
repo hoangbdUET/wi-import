@@ -1,8 +1,10 @@
 {
-	"name": "WellLogImport",
-	"version": "0.0.1",
-	"dependencies": {
-		"babel": "^6.23.0",
-		"line-by-line": "^0.1.5"
-	}
+  "name": "WellLogImport",
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "^2.5.0",
+    "babel": "^6.23.0",
+    "byline": "^5.0.0",
+    "line-by-line": "^0.1.5"
+  }
 }

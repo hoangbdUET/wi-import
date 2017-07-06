@@ -78,11 +78,11 @@ function extractCurvesFromLAS(inFile) {
     __extractCurvesFromLAS(inFile, fileName);
 }
 
-function __extractWellFromLAS2(inputURL, fileName) {
+function extractWellFromLAS2(inputURL, resultCallback) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
-    let DIR = outputDir + fileName + '_';
+//    let DIR = outputDir + fileName + '_';
 
     rl.on('line', function(line) {
         line = line.trim();
@@ -137,12 +137,13 @@ function __extractWellFromLAS2(inputURL, fileName) {
         if (currentSection) {
             sections.push(currentSection);
         }
-        fs.writeFileSync(DIR + fileName + ".json", JSON.stringify({sections: sections}, null, 4));
-        console.log("ExtractWellFromLAS done");
+        resultCallback(JSON.stringify(sections, null, 2));
+        //fs.writeFileSync(DIR + fileName + ".json", JSON.stringify({sections: sections}, null, 4));
+        //console.log("ExtractWellFromLAS done");
     });
 }
 
-function extractWellFromLAS2(inFile) {
+/*function extractWellFromLAS2(inFile) {
     let inFileArray = inFile.split(/[\/]/);
 
     let fileName = inFileArray[inFileArray.length - 1].split('.')[0];
@@ -153,7 +154,7 @@ function extractWellFromLAS2(inFile) {
 
     __extractWellFromLAS2(inFile, fileName);
 }
-
+*/
 function writeToWellFromLAS3(buffer, fieldsNameOfSection, index, filedData) {
     buffer.count += 1;
     buffer.data += index + ' la ' + filedData + '\n';

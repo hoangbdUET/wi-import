@@ -1,6 +1,6 @@
 'use strict';
 
-let LASExtractor = require('../las-extractor');
+let LAS2Extractor = require('../las2-extractor');
 // let CSVExtractor = require('../csv-extractor');
 let ASCExtractor = require('../ascii-extractor');
 

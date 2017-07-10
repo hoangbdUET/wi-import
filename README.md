@@ -12,4 +12,5 @@ This is a library that provide extracting from Las, Ascii, Csv to Json
 
 In `wi-import` has three function for file .Las, include Las2 and Las3
 
-
+```javascript
+var extract

@@ -192,5 +192,6 @@ function extractWell(inputURL, projectId, wellId, resultCallback) {
 
     });
 }
+
 module.exports.extractCurves = extractCurves;
 module.exports.extractWell = extractWell;

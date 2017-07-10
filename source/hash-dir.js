@@ -21,8 +21,8 @@ function createDirSync(basePath, hash, dir) {
 function createDir(basePath, hash, dirs) {
     dirs.push(hash.substr(0, LEN));
     hash = hash.substr(LEN);
-    fs.mkdir(basePath + "/" + dirs.join('/'), function(err) {
-        if ( err && (err.errno != -17) ) {
+    fs.mkdir(basePath + "/" + dirs.join('/'), function (err) {
+        if (err && (err.errno != -17)) {
             console.log(err);
         }
         else if (hash.length > 0) {
@@ -31,7 +31,7 @@ function createDir(basePath, hash, dirs) {
     });
 }
 
-module.exports.createWriteStream = function(basePath, hashString, fileName) {
+module.exports.createWriteStream = function (basePath, hashString, fileName) {
     var md5sum = crypto.createHash('md5');
     md5sum.update(hashString);
     var hash = md5sum.digest('hex');
@@ -71,13 +71,13 @@ function createReadStream(basePath, hashString, fileName) {
 module.exports.createPath = createPath;
 module.exports.createReadStream = createReadStream;
 
-module.exports.createJSONReadStream = function(basePath, hashString, fileName) {
+module.exports.createJSONReadStream = function (basePath, hashString, fileName) {
     var MyTransform = new Transform({
         writableObjectMode: true,
-        transform: function(chunk, encoding, callback) {
+        transform: function (chunk, encoding, callback) {
             var tokens = chunk.toString().split(" ");
-            if( !this._started_ ) {
-                this.push( '[' + JSON.stringify({y: tokens[0], x: tokens[1]}));
+            if (!this._started_) {
+                this.push('[' + JSON.stringify({y: tokens[0], x: tokens[1]}));
                 this._started_ = true;
             }
             else {
@@ -85,7 +85,7 @@ module.exports.createJSONReadStream = function(basePath, hashString, fileName) {
             }
             callback();
         },
-        flush: function(callback) {
+        flush: function (callback) {
             this.push(']\n');
             callback();
         }

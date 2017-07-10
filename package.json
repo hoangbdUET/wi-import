@@ -1,6 +1,6 @@
 {
   "name": "wi-import",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "dependencies": {
     "byline": "^5.0.0",
     "fast-csv": "^2.4.0",

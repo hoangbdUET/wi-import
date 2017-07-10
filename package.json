@@ -2,15 +2,11 @@
   "name": "wi-import",
   "version": "1.0.3",
   "dependencies": {
-    "async": "^2.5.0",
-    "babel": "^6.23.0",
-    "byline": "^5.0.0",
     "fast-csv": "^2.4.0",
-    "firstline": "^1.2.1",
     "line-by-line": "^0.1.5"
   },
   "description": "Extract file from las, ascii to json",
-  "main": "test.js",
+  "main": "index.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

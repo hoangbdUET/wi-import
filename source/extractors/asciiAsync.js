@@ -1,11 +1,11 @@
 'use strict';
 
 let async = require('async');
-let URL = require('./url.config.js').URL;
+let URL = require('./wlog/url.config.js').URL;
 let readline = require('line-by-line');
 let fs = require('fs');
 
-let wlogConfig = require('./wlog.config');
+let wlogConfig = require('./wlog/wlog.config');
 let Settings = wlogConfig.SETTINGS;
 let outDir = Settings.outputDir;
 

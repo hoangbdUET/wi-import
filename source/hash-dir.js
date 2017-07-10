@@ -53,7 +53,7 @@ function createPath(basePath, hashString, fileName) {
     while (hash.length > 0) {
         hash = createDirSync(basePath, hash, dirs);
     }
-    return dirs.join('/') + '/' + fileName;
+    return basePath + '/' + dirs.join('/') + '/' + fileName;
 }
 function createReadStream(basePath, hashString, fileName) {
     var md5sum = crypto.createHash('md5');

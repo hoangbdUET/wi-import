@@ -1,8 +1,8 @@
 'use strict';
 
-let LAS2Extractor = require('../las2-extractor');
+let LAS2Extractor = require('../las2/las2-extractor');
 // let CSVExtractor = require('../csv-extractor');
-let ASCExtractor = require('../ascii-extractor');
+let ASCExtractor = require('../ascii/ascii-extractor');
 
 module.exports.extractCurvesFromLAS = LASExtractor.extractCurvesFromLAS;
 module.exports.extractWellFromLAS2 = LASExtractor.extractWellFromLAS2;

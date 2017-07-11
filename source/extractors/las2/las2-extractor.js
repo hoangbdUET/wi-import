@@ -38,7 +38,7 @@ function extractCurves(inputURL, projectId, wellId, pathesCallBack) {
                         count: 0,
                         data: ""
                     };
-                    filePathes[curveName] = hashDir.createPath('./data', projectId + '-' + wellId + '-' + curveName, curveName + '.txt');
+                    filePathes[curveName] = hashDir.createPath('./data', inputURL + projectId + wellId + curveName, curveName + '.txt');
                     fs.writeFileSync(filePathes[curveName], "");
 
                 });

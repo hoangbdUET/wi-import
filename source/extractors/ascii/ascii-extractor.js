@@ -69,7 +69,7 @@ function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
                         data: ""
                     };
 
-                    filePathes[fieldName] = hashDir.createPath('./data', projectId + '_' + wellId + '_' + countWell + '_' + fieldName, fieldName + '.txt');
+                    filePathes[fieldName] = hashDir.createPath('./data', inputURL + projectId + wellId + countWell + fieldName, fieldName + '.txt');
                     fieldCurve.push({
                         name: fieldName,
                         unit: unitList[i],

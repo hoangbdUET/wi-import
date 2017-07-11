@@ -2,10 +2,11 @@
   "name": "wi-import",
   "version": "1.0.7",
   "dependencies": {
-    "byline": "^5.0.0",
     "async": "^2.5.0",
+    "byline": "^5.0.0",
     "fast-csv": "^2.4.0",
-    "line-by-line": "^0.1.5"
+    "line-by-line": "^0.1.5",
+    "firstline": "latest"
   },
   "description": "Extract file from las, ascii to json",
   "main": "index.js",

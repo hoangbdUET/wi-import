@@ -3,6 +3,10 @@ let readline = require('line-by-line');
 let hashDir = require('../../hash-dir');
 let fs = require('fs');
 
+let __config = {
+    basePath: './data'
+}
+
 function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     try {
         buffer.count += 1;
@@ -20,7 +24,7 @@ function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     callback();
 }
 
-function extractCurves(inputURL, projectId, wellId, pathesCallBack) {
+function extractCurves(inputURL, datasetId, pathsCallBack ) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
@@ -38,7 +42,7 @@ function extractCurves(inputURL, projectId, wellId, pathesCallBack) {
                         count: 0,
                         data: ""
                     };
-                    filePathes[curveName] = hashDir.createPath('./data', inputURL + projectId + wellId + curveName, curveName + '.txt');
+                    filePathes[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + curveName, curveName + '.txt');
                     fs.writeFileSync(filePathes[curveName], "");
 
                 });
@@ -76,7 +80,7 @@ function extractCurves(inputURL, projectId, wellId, pathesCallBack) {
                 fs.appendFileSync(filePathes[curveName], BUFFERS[curveName].data);
             });
         }
-        pathesCallBack(filePathes, curveNames);
+        pathsCallBack(filePathes, curveNames);
         console.log("ExtractCurvesFromLAS done");
     });
 
@@ -84,11 +88,30 @@ function extractCurves(inputURL, projectId, wellId, pathesCallBack) {
         if (err) console.log("ExtractCurves has error", err);
     });
 }
+function getUWI(sections) {
+    function getWellInfoSection(sections) {
+        for (var i in sections) {
+            if (sections[i].name == "~WELL INFORMATION SECTION") {
+                return sections[i];
+            }
+        }
+        return null;
+    }
+    let wellInfoSection = getWellInfoSection(sections);
+    if (!wellInfoSection) return null;
 
-function extractWell(inputURL, projectId, wellId, resultCallback) {
+    for (var j in wellInfoSection.content) {
+        if (wellInfoSection.content[j].name == "UWI") {
+            return wellInfoSection.content[j].data;
+        }
+    }
+    return null;
+}
+function extractWell(inputURL, resultCallback, options) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
+    let label = options.label || 'some label';
 
     rl.on('line', function (line) {
         line = line.trim();
@@ -144,12 +167,14 @@ function extractWell(inputURL, projectId, wellId, resultCallback) {
 
         }
         if (sections) {
+            let datasetId = getUWI(sections);
+            console.log("datasetId:" , datasetId);
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
-                    extractCurves(inputURL, projectId, wellId, function (pathesCurve, curvesName) {
+                    extractCurves(inputURL, datasetId, function (pathsCurve, curvesName) {
                         if (curvesName) {
                             curvesName.forEach(function (curveName, i) {
-                                section.content[i].data = pathesCurve[curveName];
+                                section.content[i].data = pathsCurve[curveName];
                             });
                         }
                         resultCallback(JSON.stringify(sections, null, 2));
@@ -165,3 +190,9 @@ function extractWell(inputURL, projectId, wellId, resultCallback) {
 
 module.exports.extractCurves = extractCurves;
 module.exports.extractWell = extractWell;
+module.exports.setBasePath = function(basePath) {
+    __config.basePath = basePath;
+}
+module.exports.getBasePath = function() {
+    return __config.basePath;
+}

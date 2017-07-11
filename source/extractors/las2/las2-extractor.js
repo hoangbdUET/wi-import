@@ -177,7 +177,7 @@ function extractWell(inputURL, resultCallback, options) {
                                 section.content[i].data = pathsCurve[curveName];
                             });
                         }
-                        resultCallback(JSON.stringify(sections, null, 2));
+                        resultCallback(sections);
                     });
 
 

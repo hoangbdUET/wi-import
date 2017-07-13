@@ -2,7 +2,7 @@
 let extractor = require('./las2-extractor.js');
 let url = process.argv[2];
 
-extractor.setBasePath('./curveData');
+extractor.setBasePath('./data');
 extractor.extractWell(url, function(result) {
     console.log("Well log sections extracted:", result);
 }, {

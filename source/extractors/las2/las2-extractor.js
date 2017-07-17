@@ -3,9 +3,7 @@ let readline = require('line-by-line');
 let hashDir = require('../../hash-dir');
 let fs = require('fs');
 
-let __config = {
-    basePath: './data'
-}
+let __config = require('../common-config');
 
 function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     try {
@@ -91,14 +89,18 @@ function extractCurves(inputURL, datasetId, pathsCallBack ) {
 function getUniqueIdForDataset(sections) {
     function getWellInfoSection(sections) {
         for (var i in sections) {
-            if (sections[i].name == "~WELL INFORMATION SECTION") {
+            if (sections[i].name == "~WELL INFORMATION") {
                 return sections[i];
             }
         }
         return null;
     }
     let wellInfoSection = getWellInfoSection(sections);
-    if (!wellInfoSection) return null;
+    if (!wellInfoSection) {
+        console.log("Error here");
+        console.log(sections);
+        return null;
+    }
 
     var uwi = null;
     var name = null;
@@ -106,12 +108,12 @@ function getUniqueIdForDataset(sections) {
         if (wellInfoSection.content[j].name == "UWI"){
             uwi = wellInfoSection.content[j].data;
         }
-        else if ( wellInfoSection.content[j].name.toUpperCase() == "NAME" ) {
+        else if ( wellInfoSection.content[j].name.toUpperCase().trim() == "WELL" ) {
             name = wellInfoSection.content[j].data;
         } 
     }
 
-    console.log('****************', wellInfoSection);
+    console.log('****************', wellInfoSection, name, uwi);
     return name || uwi;
 }
 function extractWell(inputURL, resultCallback, options) {

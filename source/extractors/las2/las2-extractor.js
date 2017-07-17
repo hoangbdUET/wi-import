@@ -88,7 +88,7 @@ function extractCurves(inputURL, datasetId, pathsCallBack ) {
         if (err) console.log("ExtractCurves has error", err);
     });
 }
-function getUWI(sections) {
+function getUniqueIdForDataset(sections) {
     function getWellInfoSection(sections) {
         for (var i in sections) {
             if (sections[i].name == "~WELL INFORMATION SECTION") {
@@ -100,12 +100,17 @@ function getUWI(sections) {
     let wellInfoSection = getWellInfoSection(sections);
     if (!wellInfoSection) return null;
 
+    var uwi = null;
+    var name = null;
     for (var j in wellInfoSection.content) {
-        if (wellInfoSection.content[j].name == "UWI") {
-            return wellInfoSection.content[j].data;
+        if (wellInfoSection.content[j].name == "UWI"){
+            uwi = wellInfoSection.content[j].data;
         }
+        else if ( wellInfoSection.content[j].name.toUpperCase() == "NAME" ) {
+            name = wellInfoSection.content[j].data;
+        } 
     }
-    return null;
+    return name || uwi;
 }
 function extractWell(inputURL, resultCallback, options) {
     let rl = new readline(inputURL);
@@ -167,10 +172,11 @@ function extractWell(inputURL, resultCallback, options) {
 
         }
         if (sections) {
-            let datasetId = getUWI(sections);
+            let datasetId = getUniqueIdForDataset(sections);
             console.log("datasetId:" , datasetId);
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
+                    console.log('ExtractCurve:', inputURL, datasetId);
                     extractCurves(inputURL, datasetId, function (pathsCurve, curvesName) {
                         if (curvesName) {
                             curvesName.forEach(function (curveName, i) {

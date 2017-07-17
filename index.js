@@ -1,5 +1,6 @@
 'use strict';
 
+let hashDir = require('./source/hash-dir');
 let extractLAS2 = require("./source/extractors/las2/las2-extractor");
 let extractASC = require("./source/extractors/ascii/ascii-extractor");
 let extractCSV = require("./source/extractors/csv/csv-extractor");
@@ -23,3 +24,5 @@ module.exports.extractASC = function (inputURL, projectId, wellId) {
 module.exports.extractCSV = function (inputURL, projectId, wellId) {
     extractCSV.extractFromCSV(inputURL, projectId, wellId);
 };
+
+module.exports.hashDir = hashDir;

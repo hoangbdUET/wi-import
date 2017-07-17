@@ -71,12 +71,13 @@ function createReadStream(basePath, hashString, fileName) {
 module.exports.createPath = createPath;
 module.exports.createReadStream = createReadStream;
 
-module.exports.createJSONReadStream = function (basePath, hashString, fileName) {
+module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment) {
     var MyTransform = new Transform({
         writableObjectMode: true,
         transform: function (chunk, encoding, callback) {
             var tokens = chunk.toString().split(" ");
             if (!this._started_) {
+                if(beginFragment) this.push(beginFragment);
                 this.push('[' + JSON.stringify({y: tokens[0], x: tokens[1]}));
                 this._started_ = true;
             }
@@ -86,7 +87,8 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName) 
             callback();
         },
         flush: function (callback) {
-            this.push(']\n');
+            this.push(']');
+            if(endFragment) this.push(endFragment);
             callback();
         }
     });

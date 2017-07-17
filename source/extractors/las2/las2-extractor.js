@@ -110,6 +110,8 @@ function getUniqueIdForDataset(sections) {
             name = wellInfoSection.content[j].data;
         } 
     }
+
+    console.log('****************', wellInfoSection);
     return name || uwi;
 }
 function extractWell(inputURL, resultCallback, options) {

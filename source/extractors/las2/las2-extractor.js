@@ -5,7 +5,7 @@ let fs = require('fs');
 
 let __config = {
     basePath: './data'
-}
+};
 
 function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     try {
@@ -24,7 +24,7 @@ function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     callback();
 }
 
-function extractCurves(inputURL, datasetId, pathsCallBack ) {
+function extractCurves(inputURL, label, pathsCallBack ) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
@@ -42,7 +42,7 @@ function extractCurves(inputURL, datasetId, pathsCallBack ) {
                         count: 0,
                         data: ""
                     };
-                    filePathes[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + curveName, curveName + '.txt');
+                    filePathes[curveName] = hashDir.createPath(__config.basePath, inputURL + label + curveName, curveName + '.txt');
                     fs.writeFileSync(filePathes[curveName], "");
 
                 });
@@ -88,10 +88,12 @@ function extractCurves(inputURL, datasetId, pathsCallBack ) {
         if (err) console.log("ExtractCurves has error", err);
     });
 }
+
 function getUWI(sections) {
     function getWellInfoSection(sections) {
         for (var i in sections) {
-            if (sections[i].name == "~WELL INFORMATION SECTION") {
+            if (/~WELL/g.test(sections[i].name)) {
+                console.log('da tim thay section well');
                 return sections[i];
             }
         }
@@ -101,17 +103,18 @@ function getUWI(sections) {
     if (!wellInfoSection) return null;
 
     for (var j in wellInfoSection.content) {
-        if (wellInfoSection.content[j].name == "UWI") {
+        if (/WELL/g.test(wellInfoSection.content[j].name)) {
             return wellInfoSection.content[j].data;
         }
     }
     return null;
 }
+
 function extractWell(inputURL, resultCallback, options) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
-    let label = options.label || 'some label';
+
 
     rl.on('line', function (line) {
         line = line.trim();
@@ -167,11 +170,11 @@ function extractWell(inputURL, resultCallback, options) {
 
         }
         if (sections) {
-            let datasetId = getUWI(sections);
-            console.log("datasetId:" , datasetId);
+            let label = options.label || getUWI(sections);
+            console.log('dataLabel la ', label);
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
-                    extractCurves(inputURL, datasetId, function (pathsCurve, curvesName) {
+                    extractCurves(inputURL, label, function (pathsCurve, curvesName) {
                         if (curvesName) {
                             curvesName.forEach(function (curveName, i) {
                                 section.content[i].data = pathsCurve[curveName];
@@ -192,7 +195,7 @@ module.exports.extractCurves = extractCurves;
 module.exports.extractWell = extractWell;
 module.exports.setBasePath = function(basePath) {
     __config.basePath = basePath;
-}
+};
 module.exports.getBasePath = function() {
     return __config.basePath;
-}
+};

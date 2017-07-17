@@ -20,8 +20,7 @@ function writeToFile(buffer, fileName, index, data, callback) {
 
 }
 
-function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
-    console.time('Runtime is : '); //Start runtime program
+function extractFromASC(inputURL, datasetId, resultCallBack) {
     let rl = new readline(inputURL);
     let token;
     let fieldNames;
@@ -69,7 +68,7 @@ function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
                         data: ""
                     };
 
-                    filePathes[fieldName] = hashDir.createPath('./data', inputURL + projectId + wellId + countWell + fieldName, fieldName + '.txt');
+                    filePathes[fieldName] = hashDir.createPath('./data', inputURL + datasetId + countWell + fieldName, fieldName + '.txt');
                     fieldCurve.push({
                         name: fieldName,
                         unit: unitList[i],
@@ -86,7 +85,7 @@ function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
             dataFields = line.split(' ');
             fieldNames.forEach(function (fieldName, i) {
                 writeToFile(BUFFERS[fieldName], filePathes[fieldName], count, dataFields[i], function (err) {
-                    if (err) console.log("File format is nt true", err);
+                    if (err) console.log("File format is not true", err);
                 });
             });
             count++;
@@ -107,7 +106,7 @@ function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
                         };
 
                         unitList[i] = unit + unitList[i] + '\n';
-                        filePathes[fieldName] = hashDir.createPath('./data/', projectId + '_' + wellId + '_' + countWell + '_' + fieldName, fieldName + '.txt');
+                        filePathes[fieldName] = hashDir.createPath('./data/', inputURL + datasetId + countWell + fieldName, fieldName + '.txt');
                         fs.writeFileSync(filePathes[fieldName], unitList[i]);
                     });
                     count = 0;
@@ -131,13 +130,11 @@ function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
         }
         resultCallBack(JSON.stringify(currentWell, null, 2));
         console.log('ExtractFromASC done');
-        console.timeEnd('Runtime is : '); // End runtime and print time process program
     });
 
     rl.on('err', function (err) {
         if (err) console.log('ExtractFromAsc has error', err);
     });
 }
-
 
 module.exports.extractFromASC = extractFromASC;

@@ -8,9 +8,9 @@ module.exports.setBasePath = function(path) {
     extractLAS2.setBasePath(path);
 }
 
-module.exports.extractLAS2 = function (inputURL, options) {
+module.exports.extractLAS2 = function (inputURL, callback, options) {
     extractLAS2.extractWell(inputURL, function (result) {
-        console.log('Read finished', result);
+        callback(result);
     }, options);
 };
 

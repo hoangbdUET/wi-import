@@ -2,6 +2,9 @@
 let readline = require('line-by-line');
 let fs = require('fs');
 let hashDir = require('../../hash-dir');
+let __config = {
+    basePath: './data'
+};
 
 function writeToFile(buffer, fileName, index, data, callback) {
     try {
@@ -20,118 +23,248 @@ function writeToFile(buffer, fileName, index, data, callback) {
 
 }
 
-function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
-    console.time('Runtime is : '); //Start runtime program
+function extractFromASC(inputURL, datasetId, resultCallBack) {
     let rl = new readline(inputURL);
     let token;
-    let fieldNames;
-    let dataFields;
     let BUFFERS = new Object();
     let count = 0;
-    let wellName;
+    let wellName = null;
+    let topDepth = null;
+    let bottomDepth = null;
+    let step = null;
     let countWell = 1;
-    let filePathes = new Object();
+    let filePaths = new Object();
     let unitList = new Array();
-    let unit = 'UNIT is  ';
-    let currentWell = null;
-    let fieldCurve = new Array();
+    let wells = null;
+    let curves = new Array();
+    let curvesName = new Array();
+    let dataCurves;
+    let fieldsLine;
 
     rl.on('line', function (line) {
         line = line.trim();
-        if (/OTHER/g.test(line.toUpperCase())) {
-            rl.close();
-        }
-        if (/^\$ASCII/.test(line.toUpperCase())) {
+        if (/^\$ASCII/.test(line.toUpperCase())) { //get field WELL or UWI
             let bigToken = line.split(':');
             token = bigToken[1].trim().split(' ');
         }
-        else if (/DATASET/.test(line.toUpperCase())) { //skip line Dataset
+        else if (/DATA/.test(line.toUpperCase())) { //skip line Data
         }
-        else if (new RegExp(token[0]).test(line)) {
+        else if (/DEPTH/g.test(line.toUpperCase())) { //Check field WELL or UWI, after get list Field Curve
+
             line = line.replace(/\t/g, ' ');
             line = line.replace(/\s+\s/g, ' ');
-            let spacePosititon = line.indexOf(' ');
-            currentWell = new Object();
-            currentWell.fieldWell = line.substring(0, spacePosititon);
-            fieldNames = line.substring(spacePosititon + 1, line.length).split(' ');
+            line = line.toUpperCase();
+            fieldsLine = line;
+            console.log('field line la', fieldsLine);
+            let spaceDepth = line.indexOf('DEPTH');
+            wells = new Object();
+            wells.fieldWell = line.substring(0, spaceDepth);
+            curvesName = line.substring(spaceDepth, line.length).split(' ');
         }
-        else if (/^\./g.test(line)) {
+        else if (/^\.|^M\s/g.test(line.toUpperCase())) {
             line = line.replace(/\t/g, ' ');
             line = line.replace(/\s+\s/g, ' ');
             let spacePosition = line.indexOf(' ');
-            currentWell.unitWell = line.substring(0, spacePosition);
-            currentWell.data = new Array();
+            wells.unitWell = line.substring(0, spacePosition);
+            wells.data = new Array();
             unitList = line.substring(spacePosition + 1, line.length).split(' ');
-            if (fieldNames) {
-                fieldNames.forEach(function (fieldName, i) {
-                    BUFFERS[fieldName] = {
+            if (curvesName) {
+                curvesName.forEach(function (curveName, i) {
+                    BUFFERS[curveName] = {
                         count: 0,
                         data: ""
                     };
 
-                    filePathes[fieldName] = hashDir.createPath('./data', inputURL + projectId + wellId + countWell + fieldName, fieldName + '.txt');
-                    fieldCurve.push({
-                        name: fieldName,
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                    curves.push({
+                        name: curveName,
                         unit: unitList[i],
-                        data: filePathes[fieldName]
+                        data: filePaths[curveName]
                     });
-                    unitList[i] = unit + unitList[i] + '\n';
-                    fs.writeFileSync(filePathes[fieldName], unitList[i]);
+                    //fs.writeFileSync(filePaths[curveName], "");
                 });
             }
         }
         else if (/^[A-z]|^[0-9]/g.test(line)) {
             line = line.replace(/\t/g, ' ');
-            line = line.replace(/\s+\s/g, ' ')
-            dataFields = line.split(' ');
-            fieldNames.forEach(function (fieldName, i) {
-                writeToFile(BUFFERS[fieldName], filePathes[fieldName], count, dataFields[i], function (err) {
-                    if (err) console.log("File format is nt true", err);
-                });
-            });
-            count++;
-            if (wellName) {
-                if (!(new RegExp(wellName)).test(dataFields[0])) {
-                    currentWell.data.push({
-                        wellName: wellName,
-                        fieldsCurve: fieldCurve
+            line = line.replace(/\s+\s/g, ' ');
+            if (/^WELL UWI/g.test(fieldsLine)) {
+                let spaceFirst = line.indexOf(' ');
+                let spaceSecond = line.indexOf(' ', spaceFirst + 1);
+                let currentWell = line.substring(0, spaceFirst);
+                dataCurves = line.substring(spaceSecond + 1, line.length).split(' ');
+                if (wellName) {
+                    if (!(new RegExp(wellName)).test(currentWell.toUpperCase())) {
+                        wells.data.push({
+                            wellInfo: {
+                                name: wellName,
+                                topDepth: topDepth,
+                                bottomDepth: bottomDepth,
+                                step: step,
+                                curves: curves
+                            }
+                        });
+                        curvesName.forEach(function (curveName) {
+                            fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
+                        });
+                        countWell++;
+                        curvesName.forEach(function (curveName) {
+                            BUFFERS[curveName] = {
+                                count: 0,
+                                data: ""
+                            };
+
+                            filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                            fs.writeFileSync(filePaths[curveName], "");
+                        });
+                        count = 0;
+                    }
+                }
+                curvesName.forEach(function (curveName, i) {
+                    if (/DEPTH/g.test(curveName.toUpperCase())) {
+                        if (count == 0) {
+                            topDepth = dataCurves[i];
+                        }
+                        else if (count == 1) {
+                            step = dataCurves[i] - topDepth;
+                            step = step.toFixed(4);
+                        }
+                        bottomDepth = dataCurves[i].toString();
+                    }
+                    writeToFile(BUFFERS[curveName], filePaths[curveName], count, dataCurves[i], function (err) {
+                        if (err) console.log("File format is not true", err);
                     });
-                    fieldNames.forEach(function (fieldName) {
-                        fs.appendFileSync(filePathes[fieldName], BUFFERS[fieldName].data);
+                });
+                count++;
+
+                wellName = currentWell.toUpperCase();
+            }
+            else if (/WELL|UWI/g.test(fieldsLine)) {
+                let spaceFirst = line.indexOf(' ');
+                let currentWell = line.substring(0, spaceFirst);
+                dataCurves = line.substring(spaceFirst + 1, line.length).split(' ');
+                if (wellName) {
+                    if (!(new RegExp(wellName)).test(currentWell.toUpperCase())) {
+                        wells.data.push({
+                            wellInfo: {
+                                name: wellName,
+                                topDepth: topDepth,
+                                bottomDepth: bottomDepth,
+                                step: step,
+                                curves: curves
+                            }
+                        });
+                        curvesName.forEach(function (curveName) {
+                            fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
+                        });
+                        countWell++;
+                        curvesName.forEach(function (curveName) {
+                            BUFFERS[curveName] = {
+                                count: 0,
+                                data: ""
+                            };
+
+                            filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                            fs.writeFileSync(filePaths[curveName], "");
+                        });
+                        count = 0;
+                    }
+                }
+                curvesName.forEach(function (curveName, i) {
+                    if (/DEPTH/g.test(curveName.toUpperCase())) {
+                        if (count == 0) {
+                            topDepth = dataCurves[i];
+                        }
+                        else if (count == 1) {
+                            step = dataCurves[i] - topDepth;
+                            step = step.toFixed(4);
+                        }
+                        bottomDepth = dataCurves[i].toString();
+                    }
+                    writeToFile(BUFFERS[curveName], filePaths[curveName], count, dataCurves[i], function (err) {
+                        if (err) console.log("File format is not true", err);
+                    });
+                });
+                count++;
+
+                wellName = currentWell.toUpperCase();
+            }
+            else {
+
+                dataCurves = line.split(' ');
+                let checkBottomDepth;
+                curvesName.forEach(function (curveName, i) {
+                    if (/DEPTH/g.test(curveName.toUpperCase())) {
+                        checkBottomDepth = dataCurves[i];
+                    }
+                });
+                if ((step != null) && step != (checkBottomDepth - bottomDepth).toFixed(4)) {
+                    wells.data.push({
+                        wellInfo: {
+                            name: wellName,
+                            topDepth: topDepth,
+                            bottomDepth: bottomDepth,
+                            step: step,
+                            curves: curves
+                        }
+                    });
+
+                    curvesName.forEach(function (curveName) {
+                        fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
                     });
                     countWell++;
-                    fieldNames.forEach(function (fieldName, i) {
-                        BUFFERS[fieldName] = {
+                    curvesName.forEach(function (curveName) {
+                        BUFFERS[curveName] = {
                             count: 0,
                             data: ""
                         };
 
-                        unitList[i] = unit + unitList[i] + '\n';
-                        filePathes[fieldName] = hashDir.createPath('./data/', projectId + '_' + wellId + '_' + countWell + '_' + fieldName, fieldName + '.txt');
-                        fs.writeFileSync(filePathes[fieldName], unitList[i]);
+                        filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                        fs.writeFileSync(filePaths[curveName], "");
                     });
                     count = 0;
+
                 }
+
+                curvesName.forEach(function (curveName, i) {
+                    if (/DEPTH/g.test(curveName.toUpperCase())) {
+                        if (count == 0) {
+                            topDepth = dataCurves[i];
+                        }
+                        else if (count == 1) {
+                            step = dataCurves[i] - topDepth;
+                            step = step.toFixed(4);
+                        }
+                        bottomDepth = dataCurves[i].toString();
+                    }
+                    writeToFile(BUFFERS[curveName], filePaths[curveName], count, dataCurves[i], function (err) {
+                        if (err) console.log("File format is not true", err);
+                    });
+                });
+                count++;
             }
-            wellName = dataFields[0];
         }
     });
 
     rl.on('end', function () {
-        if (fieldNames) {
-            fieldNames.forEach(function (fieldName) {
-                fs.appendFileSync(filePathes[fieldName], BUFFERS[fieldName].data);
+        if (curvesName) {
+            curvesName.forEach(function (curveName) {
+                fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
             });
         }
-        if (currentWell) {
-            currentWell.data.push({
-                wellName: wellName,
-                fieldsCurve: fieldCurve
-            })
+        if (wells) {
+            wells.data.push({
+                wellInfo: {
+                    name: wellName,
+                    topDepth: topDepth,
+                    bottomDepth: bottomDepth,
+                    step: step,
+                    curves: curves
+                }
+            });
         }
-        resultCallBack(JSON.stringify(currentWell, null, 2));
+        resultCallBack(wells);
         console.log('ExtractFromASC done');
-        console.timeEnd('Runtime is : '); // End runtime and print time process program
     });
 
     rl.on('err', function (err) {
@@ -139,5 +272,10 @@ function extractFromASC(inputURL, projectId, wellId, resultCallBack) {
     });
 }
 
-
 module.exports.extractFromASC = extractFromASC;
+module.exports.setBasePath = function (basePath) {
+    __config.basePath = basePath;
+};
+module.exports.getBasePath = function () {
+    return __config.basePath;
+};

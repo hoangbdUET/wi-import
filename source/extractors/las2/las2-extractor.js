@@ -3,7 +3,9 @@ let readline = require('line-by-line');
 let hashDir = require('../../hash-dir');
 let fs = require('fs');
 
+
 let __config = require('../common-config');
+
 
 function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     try {
@@ -22,7 +24,7 @@ function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     callback();
 }
 
-function extractCurves(inputURL, datasetId, pathsCallBack ) {
+function extractCurves(inputURL, label, pathsCallBack ) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
@@ -40,7 +42,8 @@ function extractCurves(inputURL, datasetId, pathsCallBack ) {
                         count: 0,
                         data: ""
                     };
-                    filePathes[curveName] = hashDir.createPath(__config.basePath, datasetId + curveName, curveName + '.txt');
+                    filePathes[curveName] = hashDir.createPath(__config.basePath, inputURL + label + curveName, curveName + '.txt');
+
                     fs.writeFileSync(filePathes[curveName], "");
 
                 });
@@ -86,10 +89,11 @@ function extractCurves(inputURL, datasetId, pathsCallBack ) {
         if (err) console.log("ExtractCurves has error", err);
     });
 }
+
 function getUniqueIdForDataset(sections) {
     function getWellInfoSection(sections) {
         for (var i in sections) {
-            if (sections[i].name == "~WELL INFORMATION") {
+            if (sections[i].name == "~WELL") {
                 return sections[i];
             }
         }
@@ -105,6 +109,7 @@ function getUniqueIdForDataset(sections) {
     var uwi = null;
     var name = null;
     for (var j in wellInfoSection.content) {
+
         if (wellInfoSection.content[j].name == "UWI"){
             uwi = wellInfoSection.content[j].data;
         }
@@ -116,11 +121,12 @@ function getUniqueIdForDataset(sections) {
     console.log('****************', wellInfoSection, name, uwi);
     return name || uwi;
 }
+
 function extractWell(inputURL, resultCallback, options) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
-    let label = options.label || 'some label';
+
 
     rl.on('line', function (line) {
         line = line.trim();
@@ -176,12 +182,11 @@ function extractWell(inputURL, resultCallback, options) {
 
         }
         if (sections) {
-            let datasetId = getUniqueIdForDataset(sections);
-            console.log("datasetId:" , datasetId);
+
+            let label = options.label || getUniqueIdForDataset(sections);
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
-                    console.log('ExtractCurve:', inputURL, datasetId);
-                    extractCurves(inputURL, datasetId, function (pathsCurve, curvesName) {
+                    extractCurves(inputURL, label, function (pathsCurve, curvesName) {
                         if (curvesName) {
                             curvesName.forEach(function (curveName, i) {
                                 section.content[i].data = pathsCurve[curveName];
@@ -202,7 +207,7 @@ module.exports.extractCurves = extractCurves;
 module.exports.extractWell = extractWell;
 module.exports.setBasePath = function(basePath) {
     __config.basePath = basePath;
-}
+};
 module.exports.getBasePath = function() {
     return __config.basePath;
-}
+};

@@ -65,7 +65,13 @@ function createReadStream(basePath, hashString, fileName) {
         hash = createDirSync(basePath, hash, dirs);
     }
 
-    return fs.createReadStream(basePath + '/' + dirs.join('/') + '/' + fileName, {flags: 'r'});
+    try {
+        var stream = fs.createReadStream(basePath + '/' + dirs.join('/') + '/' + fileName, {flags: 'r'});
+        return stream;
+    }
+    catch(err) {
+        return null;
+    }
 }
 
 module.exports.createPath = createPath;
@@ -93,6 +99,7 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
         }
     });
     var readStream = createReadStream(basePath, hashString, fileName);
+    if ( !readStream ) return null;
 
     return byline.createStream(readStream).pipe(MyTransform);
 }

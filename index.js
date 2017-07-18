@@ -7,7 +7,11 @@ let extractCSV = require("./source/extractors/csv/csv-extractor");
 
 module.exports.setBasePath = function(path) {
     extractLAS2.setBasePath(path);
-}
+};
+
+module.exports.getBasePath = function (path) {
+    return extractLAS2.getBasePath();
+};
 
 module.exports.extractLAS2 = function (inputURL, callback, options) {
     extractLAS2.extractWell(inputURL, function (result) {

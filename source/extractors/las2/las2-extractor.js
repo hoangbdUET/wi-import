@@ -43,6 +43,7 @@ function extractCurves(inputURL, label, pathsCallBack ) {
                         data: ""
                     };
                     filePathes[curveName] = hashDir.createPath(__config.basePath, inputURL + label + curveName, curveName + '.txt');
+
                     fs.writeFileSync(filePathes[curveName], "");
 
                 });

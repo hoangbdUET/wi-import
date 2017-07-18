@@ -5,3 +5,4 @@ data/*
 sample-data
 **/curveData
 **/data
+package-lock.json

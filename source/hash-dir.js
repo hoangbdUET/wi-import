@@ -65,18 +65,25 @@ function createReadStream(basePath, hashString, fileName) {
         hash = createDirSync(basePath, hash, dirs);
     }
 
-    return fs.createReadStream(basePath + '/' + dirs.join('/') + '/' + fileName, {flags: 'r'});
+    try {
+        var stream = fs.createReadStream(basePath + '/' + dirs.join('/') + '/' + fileName, {flags: 'r'});
+        return stream;
+    }
+    catch(err) {
+        return null;
+    }
 }
 
 module.exports.createPath = createPath;
 module.exports.createReadStream = createReadStream;
 
-module.exports.createJSONReadStream = function (basePath, hashString, fileName) {
+module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment) {
     var MyTransform = new Transform({
         writableObjectMode: true,
         transform: function (chunk, encoding, callback) {
             var tokens = chunk.toString().split(" ");
             if (!this._started_) {
+                if(beginFragment) this.push(beginFragment);
                 this.push('[' + JSON.stringify({y: tokens[0], x: tokens[1]}));
                 this._started_ = true;
             }
@@ -86,11 +93,13 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName) 
             callback();
         },
         flush: function (callback) {
-            this.push(']\n');
+            this.push(']');
+            if(endFragment) this.push(endFragment);
             callback();
         }
     });
     var readStream = createReadStream(basePath, hashString, fileName);
+    if ( readStream ) return null;
 
     return byline.createStream(readStream).pipe(MyTransform);
 }

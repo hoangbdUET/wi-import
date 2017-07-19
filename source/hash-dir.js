@@ -99,7 +99,7 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
         }
     });
     var readStream = createReadStream(basePath, hashString, fileName);
-    if ( readStream ) return null;
+    if ( !readStream ) return null;
 
     return byline.createStream(readStream).pipe(MyTransform);
 }

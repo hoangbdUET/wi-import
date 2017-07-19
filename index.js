@@ -7,6 +7,8 @@ let extractCSV = require("./source/extractors/csv/csv-extractor");
 
 module.exports.setBasePath = function(path) {
     extractLAS2.setBasePath(path);
+    extractASC.setBasePath(path);
+    //extractCSV.setBasePath(path);
 };
 
 module.exports.getBasePath = function (path) {
@@ -19,10 +21,10 @@ module.exports.extractLAS2 = function (inputURL, callback, options) {
     }, options);
 };
 
-module.exports.extractASC = function (inputURL, projectId, wellId) {
-    extractASC.extractFromASC(inputURL, projectId, wellId, function (result) {
-        console.log('Read finished', result)
-    })
+module.exports.extractASC = function (inputURL, callback, options) {
+    extractASC.extractFromASC(inputURL, function (result) {
+        callback(result);
+    }, options);
 };
 
 module.exports.extractCSV = function (inputURL, projectId, wellId) {

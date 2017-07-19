@@ -2,9 +2,8 @@
 let readline = require('line-by-line');
 let fs = require('fs');
 let hashDir = require('../../hash-dir');
-let __config = {
-    basePath: './data'
-};
+let path = require('path');
+let __config = require('../common-config');
 
 function writeToFile(buffer, fileName, index, data, callback) {
     try {
@@ -23,7 +22,7 @@ function writeToFile(buffer, fileName, index, data, callback) {
 
 }
 
-function extractFromASC(inputURL, datasetId, resultCallBack) {
+function extractFromASC(inputURL, resultCallBack, options) {
     let rl = new readline(inputURL);
     let token;
     let BUFFERS = new Object();
@@ -40,12 +39,15 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
     let curvesName = new Array();
     let dataCurves;
     let fieldsLine;
+    let fileFormat = path.extname(inputURL);
+    let label = options.label || "label default";
 
+    console.log('file format la ', fileFormat);
     rl.on('line', function (line) {
         line = line.trim();
         if (/^\$ASCII/.test(line.toUpperCase())) { //get field WELL or UWI
             let bigToken = line.split(':');
-            token = bigToken[1].trim().split(' ');
+            token = bigToken[1].trim().split(/\s|,/);
         }
         else if (/DATA/.test(line.toUpperCase())) { //skip line Data
         }
@@ -55,19 +57,30 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
             line = line.replace(/\s+\s/g, ' ');
             line = line.toUpperCase();
             fieldsLine = line;
-            console.log('field line la', fieldsLine);
             let spaceDepth = line.indexOf('DEPTH');
             wells = new Object();
             wells.fieldWell = line.substring(0, spaceDepth);
-            curvesName = line.substring(spaceDepth, line.length).split(' ');
+            curvesName = line.substring(spaceDepth, line.length).split(/\s|,/);
         }
-        else if (/^\.|^M\s/g.test(line.toUpperCase())) {
+        else if (/^\.|^M\s|^M,/g.test(line.toUpperCase())) {
             line = line.replace(/\t/g, ' ');
             line = line.replace(/\s+\s/g, ' ');
-            let spacePosition = line.indexOf(' ');
-            wells.unitWell = line.substring(0, spacePosition);
+            let spacePosition;
+            if(/\.CSV/g.test(fileFormat.toUpperCase())) {
+                spacePosition = line.indexOf(',');
+                if (/^WELL UWI|^WELL,UWI/g.test(fieldsLine)) {
+                    spacePosition = line.indexOf(',', spacePosition + 1);
+                }
+            }
+            else {
+                spacePosition = line.indexOf(' ');
+                if (/^WELL UWI|^WELL,UWI/g.test(fieldsLine)) {
+                    spacePosition = line.indexOf(' ', spacePosition + 1);
+                }
+            }
             wells.data = new Array();
-            unitList = line.substring(spacePosition + 1, line.length).split(' ');
+
+            unitList = line.substring(spacePosition + 1, line.length).split(/\s|,/);
             if (curvesName) {
                 curvesName.forEach(function (curveName, i) {
                     BUFFERS[curveName] = {
@@ -81,18 +94,26 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
                         unit: unitList[i],
                         data: filePaths[curveName]
                     });
-                    //fs.writeFileSync(filePaths[curveName], "");
+                    fs.writeFileSync(filePaths[curveName], "");
                 });
             }
         }
         else if (/^[A-z]|^[0-9]/g.test(line)) {
             line = line.replace(/\t/g, ' ');
             line = line.replace(/\s+\s/g, ' ');
-            if (/^WELL UWI/g.test(fieldsLine)) {
-                let spaceFirst = line.indexOf(' ');
-                let spaceSecond = line.indexOf(' ', spaceFirst + 1);
+            if (/^WELL UWI|^WELL,UWI/g.test(fieldsLine)) {
+                let spaceFirst;
+                let spaceSecond;
+                if(/\.CSV/g.test(fileFormat.toUpperCase())) {
+                    spaceFirst = line.indexOf(',');
+                    spaceSecond = line.indexOf(',', spaceFirst + 1);
+                }
+                else {
+                    spaceFirst = line.indexOf(' ');
+                    spaceSecond  = line.indexOf(' ', spaceFirst + 1);
+                }
                 let currentWell = line.substring(0, spaceFirst);
-                dataCurves = line.substring(spaceSecond + 1, line.length).split(' ');
+                dataCurves = line.substring(spaceSecond + 1, line.length).split(/\s|,/);
                 if (wellName) {
                     if (!(new RegExp(wellName)).test(currentWell.toUpperCase())) {
                         wells.data.push({
@@ -114,7 +135,7 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
                                 data: ""
                             };
 
-                            filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                            filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + label + countWell + curveName, curveName + '.txt');
                             fs.writeFileSync(filePaths[curveName], "");
                         });
                         count = 0;
@@ -137,12 +158,25 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
                 });
                 count++;
 
-                wellName = currentWell.toUpperCase();
+                wellName = currentWell.toUpperCase().split(/\s|,/)[0];
             }
             else if (/WELL|UWI/g.test(fieldsLine)) {
-                let spaceFirst = line.indexOf(' ');
-                let currentWell = line.substring(0, spaceFirst);
-                dataCurves = line.substring(spaceFirst + 1, line.length).split(' ');
+                let spaceFirst;
+                let currentWell;
+                if(/\.CSV/g.test(fileFormat.toUpperCase())) {
+                    spaceFirst = line.indexOf(',');
+                }
+                else {
+                    spaceFirst = line.indexOf(' ');
+                }
+                if(/WELL/g.test(fieldsLine)) {
+                    currentWell = line.substring(0, spaceFirst);
+                }
+                else {
+                    currentWell = line.substring(0, spaceFirst) + 'W';
+                }
+
+                dataCurves = line.substring(spaceFirst + 1, line.length).split(/\s|,/);
                 if (wellName) {
                     if (!(new RegExp(wellName)).test(currentWell.toUpperCase())) {
                         wells.data.push({
@@ -164,7 +198,7 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
                                 data: ""
                             };
 
-                            filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                            filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + label + countWell + curveName, curveName + '.txt');
                             fs.writeFileSync(filePaths[curveName], "");
                         });
                         count = 0;
@@ -186,12 +220,17 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
                     });
                 });
                 count++;
+                if(/WELL/g.test(fieldsLine)) {
+                    wellName = currentWell.toUpperCase();
+                }
+                else {
+                    wellName = currentWell.toUpperCase().split('W')[0] + 'W';
+                }
 
-                wellName = currentWell.toUpperCase();
             }
             else {
 
-                dataCurves = line.split(' ');
+                dataCurves = line.split(/\s|,/);
                 let checkBottomDepth;
                 curvesName.forEach(function (curveName, i) {
                     if (/DEPTH/g.test(curveName.toUpperCase())) {
@@ -219,7 +258,7 @@ function extractFromASC(inputURL, datasetId, resultCallBack) {
                             data: ""
                         };
 
-                        filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                        filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + label + countWell + curveName, curveName + '.txt');
                         fs.writeFileSync(filePaths[curveName], "");
                     });
                     count = 0;

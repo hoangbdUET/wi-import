@@ -3,14 +3,28 @@ let readline = require('line-by-line');
 let hashDir = require('../../hash-dir');
 let fs = require('fs');
 
-
 let __config = require('../common-config');
 
-
-function writeToCurveFile(buffer, curveFileName, index, value, callback) {
+function writeToCurveFile(buffer, curveFileName, index, value, defaultNull, callback) {
+    let indexNull;
+    let dataNull;
     try {
         buffer.count += 1;
-        buffer.data += index + " " + value + "\n";
+        if(index == 0) {
+            if(value == defaultNull) {
+                buffer.data += index + " undefined" + "\n";
+            }
+            else {
+                buffer.data += index + " " + value + "\n";
+            }
+        }
+        else {
+            if(value == defaultNull) {
+            }
+            else {
+                buffer.data += index + " " + value + "\n";
+            }
+        }
         if (buffer.count >= 1000) {
             fs.appendFileSync(curveFileName, buffer.data);
             buffer.count = 0;
@@ -20,16 +34,15 @@ function writeToCurveFile(buffer, curveFileName, index, value, callback) {
     catch (err) {
         callback(err);
     }
-
     callback();
 }
 
-function extractCurves(inputURL, label, pathsCallBack ) {
+function extractCurves(inputURL, label, defaultNull, pathsCallBack ) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
     let BUFFERS = new Object();
-    let filePathes = new Object();
+    let filePaths = new Object();
     let nameSection;
 
     rl.on('line', function (line) {
@@ -42,9 +55,9 @@ function extractCurves(inputURL, label, pathsCallBack ) {
                         count: 0,
                         data: ""
                     };
-                    filePathes[curveName] = hashDir.createPath(__config.basePath, inputURL + label + curveName, curveName + '.txt');
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + label + curveName, curveName + '.txt');
 
-                    fs.writeFileSync(filePathes[curveName], "");
+                    fs.writeFileSync(filePaths[curveName], "");
 
                 });
             }
@@ -67,7 +80,7 @@ function extractCurves(inputURL, label, pathsCallBack ) {
             let fields = line.split(" ");
             if (curveNames) {
                 curveNames.forEach(function (curveName, i) {
-                    writeToCurveFile(BUFFERS[curveName], filePathes[curveName], count, fields[i], function (err) {
+                    writeToCurveFile(BUFFERS[curveName], filePaths[curveName], count, fields[i], defaultNull, function (err) {
                         if (err) console.log('File format is not true', err);
                     });
                 });
@@ -78,10 +91,10 @@ function extractCurves(inputURL, label, pathsCallBack ) {
     rl.on('end', function () {
         if (curveNames) {
             curveNames.forEach(function (curveName) {
-                fs.appendFileSync(filePathes[curveName], BUFFERS[curveName].data);
+                fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
             });
         }
-        pathsCallBack(filePathes, curveNames);
+        pathsCallBack(filePaths, curveNames);
         console.log("ExtractCurvesFromLAS done");
     });
 
@@ -126,7 +139,7 @@ function extractWell(inputURL, resultCallback, options) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
-
+    let defaultNull = null;
 
     rl.on('line', function (line) {
         line = line.trim();
@@ -165,6 +178,9 @@ function extractWell(inputURL, resultCallback, options) {
                     let fieldDescription = remainingString.substring(colonPosition, remainingString.length);
                     let thirdField = remainingString.substring(0, colonPosition).trim();
                     thirdField = thirdField.replace(/([0-9])=([0-9])/g, '$1:$2');
+                    if(/NULL/g.test(fieldName.toUpperCase())) {
+                        defaultNull = thirdField;
+                    }
                     currentSection.content.push({
                         name: fieldName.trim(),
                         unit: secondField.trim(),
@@ -186,7 +202,7 @@ function extractWell(inputURL, resultCallback, options) {
             let label = options.label || getUniqueIdForDataset(sections);
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
-                    extractCurves(inputURL, label, function (pathsCurve, curvesName) {
+                    extractCurves(inputURL, label, defaultNull, function (pathsCurve, curvesName) {
                         if (curvesName) {
                             curvesName.forEach(function (curveName, i) {
                                 section.content[i].data = pathsCurve[curveName];

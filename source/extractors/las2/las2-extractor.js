@@ -168,7 +168,7 @@ function extractWell(inputURL, resultCallback, options) {
                     let fieldName = line.substring(0, dotPosition);
                     let remainingString = line.substring(dotPosition, line.length).trim();
                     let firstSpaceAfterDotPos = remainingString.indexOf(' ');
-                    let secondField = remainingString.substring(0, firstSpaceAfterDotPos);
+                    let secondField = remainingString.substring(1, firstSpaceAfterDotPos);
                     remainingString = remainingString.substring(firstSpaceAfterDotPos, remainingString.length).trim();
                     let colonPosition = remainingString.indexOf(':');
 
@@ -180,6 +180,9 @@ function extractWell(inputURL, resultCallback, options) {
                     thirdField = thirdField.replace(/([0-9])=([0-9])/g, '$1:$2');
                     if(/NULL/g.test(fieldName.toUpperCase())) {
                         defaultNull = thirdField;
+                    }
+                    if(/^\./.test(secondField)) {
+                        secondField = "";
                     }
                     currentSection.content.push({
                         name: fieldName.trim(),

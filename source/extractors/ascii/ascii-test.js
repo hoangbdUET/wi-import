@@ -7,6 +7,6 @@ let extractor = require('./ascii-extractor');
 //let url = '../../../sample-data/ascii/02_97_DD_1X.asc';
 let url = '../../../sample-data/ascii/Merge_File.asc';
 
-extractor.extractFromASC(url, 'project1', function (result) {
+extractor.extractFromASC(url, function (result) {
     console.log(JSON.stringify(result, null, 2));
-}); //done
+}, {label:'datasetLabel'}); //done

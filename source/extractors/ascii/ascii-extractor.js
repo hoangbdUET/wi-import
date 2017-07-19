@@ -88,7 +88,7 @@ function extractFromASC(inputURL, resultCallBack, options) {
                         data: ""
                     };
 
-                    filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + datasetId + countWell + curveName, curveName + '.txt');
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + label + countWell + curveName, curveName + '.txt');
                     curves.push({
                         name: curveName,
                         unit: unitList[i],

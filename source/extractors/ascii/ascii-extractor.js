@@ -49,7 +49,7 @@ function extractFromASC(inputURL, resultCallBack, options) {
             let bigToken = line.split(':');
             token = bigToken[1].trim().split(/\s|,/);
         }
-        else if (/DATA/.test(line.toUpperCase())) { //skip line Data
+        else if (/DATA/.test(line.toUpperCase())) { //skip line have string "Data"
         }
         else if (/DEPTH/g.test(line.toUpperCase())) { //Check field WELL or UWI, after get list Field Curve
 

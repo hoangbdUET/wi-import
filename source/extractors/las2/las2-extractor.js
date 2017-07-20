@@ -6,24 +6,13 @@ let fs = require('fs');
 let __config = require('../common-config');
 
 function writeToCurveFile(buffer, curveFileName, index, value, defaultNull, callback) {
-    let indexNull;
-    let dataNull;
     try {
         buffer.count += 1;
-        if(index == 0) {
-            if(value == defaultNull) {
-                buffer.data += index + " undefined" + "\n";
-            }
-            else {
-                buffer.data += index + " " + value + "\n";
-            }
+        if (value == defaultNull) {
+            buffer.data += index + " null" + "\n";
         }
         else {
-            if(value == defaultNull) {
-            }
-            else {
-                buffer.data += index + " " + value + "\n";
-            }
+            buffer.data += index + " " + value + "\n";
         }
         if (buffer.count >= 1000) {
             fs.appendFileSync(curveFileName, buffer.data);
@@ -37,7 +26,7 @@ function writeToCurveFile(buffer, curveFileName, index, value, defaultNull, call
     callback();
 }
 
-function extractCurves(inputURL, label, defaultNull, pathsCallBack ) {
+function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
@@ -56,9 +45,7 @@ function extractCurves(inputURL, label, defaultNull, pathsCallBack ) {
                         data: ""
                     };
                     filePaths[curveName] = hashDir.createPath(__config.basePath, inputURL + label + curveName, curveName + '.txt');
-
                     fs.writeFileSync(filePaths[curveName], "");
-
                 });
             }
         }
@@ -112,6 +99,7 @@ function getUniqueIdForDataset(sections) {
         }
         return null;
     }
+
     let wellInfoSection = getWellInfoSection(sections);
     if (!wellInfoSection) {
         console.log("Error here");
@@ -123,12 +111,12 @@ function getUniqueIdForDataset(sections) {
     var name = null;
     for (var j in wellInfoSection.content) {
 
-        if (wellInfoSection.content[j].name == "UWI"){
+        if (wellInfoSection.content[j].name == "UWI") {
             uwi = wellInfoSection.content[j].data;
         }
-        else if ( wellInfoSection.content[j].name.toUpperCase().trim() == "WELL" ) {
+        else if (wellInfoSection.content[j].name.toUpperCase().trim() == "WELL") {
             name = wellInfoSection.content[j].data;
-        } 
+        }
     }
 
     console.log('****************', wellInfoSection, name, uwi);
@@ -178,10 +166,10 @@ function extractWell(inputURL, resultCallback, options) {
                     let fieldDescription = remainingString.substring(colonPosition, remainingString.length);
                     let thirdField = remainingString.substring(0, colonPosition).trim();
                     thirdField = thirdField.replace(/([0-9])=([0-9])/g, '$1:$2');
-                    if(/NULL/g.test(fieldName.toUpperCase())) {
+                    if (/NULL/g.test(fieldName.toUpperCase())) {
                         defaultNull = thirdField;
                     }
-                    if(/^\./.test(secondField)) {
+                    if (/^\./.test(secondField)) {
                         secondField = "";
                     }
                     currentSection.content.push({
@@ -224,9 +212,9 @@ function extractWell(inputURL, resultCallback, options) {
 
 module.exports.extractCurves = extractCurves;
 module.exports.extractWell = extractWell;
-module.exports.setBasePath = function(basePath) {
+module.exports.setBasePath = function (basePath) {
     __config.basePath = basePath;
 };
-module.exports.getBasePath = function() {
+module.exports.getBasePath = function () {
     return __config.basePath;
 };

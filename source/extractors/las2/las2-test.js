@@ -6,7 +6,6 @@ extractor.setBasePath('./data');
 extractor.extractWell(url, function(result) {
     console.log("Well log sections extracted:", JSON.stringify(result, null, 2));
 }, {
-    label:"Las 2"
 }); //done
 
 //extractor.extractCurves(url, 'project1', 'well1'); //done

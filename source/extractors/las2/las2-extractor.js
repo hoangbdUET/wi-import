@@ -91,36 +91,19 @@ function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
 }
 
 function getUniqueIdForDataset(sections) {
-    function getWellInfoSection(sections) {
-        for (var i in sections) {
-            if (sections[i].name == "~WELL") {
-                return sections[i];
-            }
+    let label;
+    sections.forEach(function (section) {
+        if(/~WELL/g.test(section.name.toUpperCase())) {
+            section.content.forEach(function (item) {
+                if (item.name.toUpperCase().trim() == "WELL") {
+                    label = item.data;
+                }
+            })
+
         }
-        return null;
-    }
+    });
 
-    let wellInfoSection = getWellInfoSection(sections);
-    if (!wellInfoSection) {
-        console.log("Error here");
-        console.log(sections);
-        return null;
-    }
-
-    var uwi = null;
-    var name = null;
-    for (var j in wellInfoSection.content) {
-
-        if (wellInfoSection.content[j].name == "UWI") {
-            uwi = wellInfoSection.content[j].data;
-        }
-        else if (wellInfoSection.content[j].name.toUpperCase().trim() == "WELL") {
-            name = wellInfoSection.content[j].data;
-        }
-    }
-
-    console.log('****************', wellInfoSection, name, uwi);
-    return name || uwi;
+    return label;
 }
 
 function extractWell(inputURL, resultCallback, options) {
@@ -128,7 +111,6 @@ function extractWell(inputURL, resultCallback, options) {
     let sections = new Array();
     let currentSection = null;
     let defaultNull = null;
-
     rl.on('line', function (line) {
         line = line.trim();
         if (/^~A/.test(line)) { //
@@ -188,9 +170,12 @@ function extractWell(inputURL, resultCallback, options) {
             sections.push(currentSection);
 
         }
+        let label = options.label || getUniqueIdForDataset(sections);
+        sections.push({
+            name: "label",
+            content: label
+        });
         if (sections) {
-
-            let label = options.label || getUniqueIdForDataset(sections);
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
                     extractCurves(inputURL, label, defaultNull, function (pathsCurve, curvesName) {

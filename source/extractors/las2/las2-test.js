@@ -16,9 +16,8 @@ const options = {algorithm:cypher};
 let path;
 let serverPubKey;
 extractor.setBasePath('./data');
-extractor.extractWell(url, clientPubKey, function(result, paths, curvesName) {
+extractor.extractWell(url, function(result) {
     console.log("Well log sections extracted:", JSON.stringify(result, null, 2));
-    console.log("Well log sections extracted:", JSON.stringify(paths, null, 2));
 
 }, {
     label:"some label"

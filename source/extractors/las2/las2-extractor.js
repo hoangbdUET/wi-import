@@ -58,7 +58,7 @@ function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
                         count: 0,
                         data: ""
                     };
-                    filePaths[curveName] = hashDir.createPath(__config.basePath, label + curveName, curveName + '.txt');
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, label + curveName, curveName + '.enc.txt');
                     fs.writeFileSync(filePaths[curveName], "");
                 });
             }
@@ -114,16 +114,16 @@ function getUniqueIdForDataset(sections) {
             section.content.forEach(function (item) {
                 if (item.name.toUpperCase().trim() == "WELL") {
                     label = item.data;
+                    return label;
                 }
             })
 
         }
     });
 
-    return label;
 }
 
-function extractWell(inputURL,clientPubKey, resultCallback, options) {
+function extractWell(inputURL, resultCallback, options) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
@@ -197,22 +197,19 @@ function extractWell(inputURL,clientPubKey, resultCallback, options) {
                 if (/CURVE/g.test(section.name)) {
                     section.content.shift();
                     extractCurves(inputURL, label, defaultNull, function (pathsCurve, curvesName) {
-                        encoding(pathsCurve, curvesName, function (paths) {
                             if (curvesName) {
                                 curvesName.forEach(function (curveName, i) {
-                                    section.content[i].data = paths[curveName];
+                                    section.content[i].data = pathsCurve[curveName];
                                 });
                             }
-                            pathsCurve = paths;
-                        });
-                        resultCallback(sections, pathsCurve, curvesName);
+
                     });
 
 
                 }
             });
         }
-
+        resultCallback(sections);
     });
 }
 

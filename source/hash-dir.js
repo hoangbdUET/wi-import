@@ -55,6 +55,7 @@ function createPath(basePath, hashString, fileName) {
     }
     return basePath + '/' + dirs.join('/') + '/' + fileName;
 }
+
 function createReadStream(basePath, hashString, fileName) {
     var md5sum = crypto.createHash('md5');
     md5sum.update(hashString);

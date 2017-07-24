@@ -4,7 +4,9 @@
   "dependencies": {
     "async": "^2.5.0",
     "byline": "^5.0.0",
+    "crypto": "0.0.3",
     "fast-csv": "^2.4.0",
+    "file-encryptor": "^0.1.1",
     "firstline": "latest",
     "line-by-line": "^0.1.5",
     "path": "^0.12.7"

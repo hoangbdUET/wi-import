@@ -58,7 +58,7 @@ function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
                         count: 0,
                         data: ""
                     };
-                    filePaths[curveName] = hashDir.createPath(__config.basePath, label + curveName, curveName + '.enc.txt');
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, label + curveName, curveName + '.txt');
                     fs.writeFileSync(filePaths[curveName], "");
                 });
             }

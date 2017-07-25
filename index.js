@@ -14,10 +14,10 @@ module.exports.getBasePath = function (path) {
     return extractLAS2.getBasePath();
 };
 
-module.exports.extractLAS2 = function (inputURL, callback, options) {
+module.exports.extractLAS2 = function (inputURL, callback) {
     extractLAS2.extractWell(inputURL, function (result) {
         callback(result);
-    }, options);
+    });
 };
 
 module.exports.deleteFile = function (inputURL) {

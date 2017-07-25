@@ -7,7 +7,7 @@ let __config = require('../common-config');
 const cryptorFile = require('file-encryptor');
 let cypher = CONFIG.cypher;
 let secret = CONFIG.secret;
-const options = {algorithm:cypher};
+const optionsEncode = {algorithm:cypher};
 function writeToCurveFile(buffer, curveFileName, index, value, defaultNull) {
         buffer.count += 1;
         if (value == defaultNull) {
@@ -31,7 +31,7 @@ function encoding(pathsCurve, curvesName, callbackGetPaths) {
         dirs[dirs.length - 1] = dirs[dirs.length - 1].split('.')[0];
         dirs = dirs.join('/');
         output = dirs + '.enc.txt';
-        cryptorFile.encryptFile(pathsCurve[curveName], output, secret, options, function (err) {
+        cryptorFile.encryptFile(pathsCurve[curveName], output, secret, optionsEncode, function (err) {
             if (err) return console.log(err);
 
         });
@@ -40,7 +40,7 @@ function encoding(pathsCurve, curvesName, callbackGetPaths) {
     callbackGetPaths(paths);
 }
 
-function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
+function extractCurves(inputURL, datasetName, defaultNull, pathsCallBack) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
@@ -58,7 +58,7 @@ function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
                         count: 0,
                         data: ""
                     };
-                    filePaths[curveName] = hashDir.createPath(__config.basePath, label + curveName, curveName + '.txt');
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, datasetName + curveName, curveName + '.txt');
                     fs.writeFileSync(filePaths[curveName], "");
                 });
             }
@@ -108,19 +108,17 @@ function extractCurves(inputURL, label, defaultNull, pathsCallBack) {
 }
 
 function getUniqueIdForDataset(sections) {
-    let label;
+    let datasetName;
     sections.forEach(function (section) {
         if(/~WELL/g.test(section.name.toUpperCase())) {
             section.content.forEach(function (item) {
                 if (item.name.toUpperCase().trim() == "WELL") {
-                    label = item.data;
-                    return label;
+                    datasetName = item.data;
                 }
             })
-
         }
     });
-
+    return datasetName;
 }
 
 function extractWell(inputURL, resultCallback, options) {
@@ -185,18 +183,15 @@ function extractWell(inputURL, resultCallback, options) {
     rl.on('end', function () {
         if (currentSection) {
             sections.push(currentSection);
-
         }
-        let label = options.label || getUniqueIdForDataset(sections);
-        sections.push({
-            name: "label",
-            content: label
-        });
+
+        let datasetName = getUniqueIdForDataset(sections);
+
         if (sections) {
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
                     section.content.shift();
-                    extractCurves(inputURL, label, defaultNull, function (pathsCurve, curvesName) {
+                    extractCurves(inputURL, datasetName, defaultNull, function (pathsCurve, curvesName) {
                             if (curvesName) {
                                 curvesName.forEach(function (curveName, i) {
                                     section.content[i].data = pathsCurve[curveName];
@@ -204,8 +199,6 @@ function extractWell(inputURL, resultCallback, options) {
                             }
 
                     });
-
-
                 }
             });
         }
@@ -225,6 +218,7 @@ module.exports.deleteFile = deleteFile;
 module.exports.setBasePath = function (basePath) {
     __config.basePath = basePath;
 };
+
 module.exports.getBasePath = function () {
     return __config.basePath;
 };

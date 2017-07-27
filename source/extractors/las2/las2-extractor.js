@@ -1,5 +1,6 @@
 'use strict';
 let readline = require('line-by-line');
+let async = require('async');
 let hashDir = require('../../hash-dir');
 let CONFIG = require('../crypto-file/crypto.config').CONFIG;
 let fs = require('fs');
@@ -7,24 +8,23 @@ let __config = require('../common-config');
 const cryptorFile = require('file-encryptor');
 let cypher = CONFIG.cypher;
 let secret = CONFIG.secret;
-const optionsEncode = {algorithm:cypher};
+const optionsEncode = {algorithm: cypher};
 function writeToCurveFile(buffer, curveFileName, index, value, defaultNull) {
-        buffer.count += 1;
-        if (value == defaultNull) {
-            buffer.data += index + " null" + "\n";
-        }
-        else {
-            buffer.data += index + " " + value + "\n";
-        }
-        if (buffer.count >= 1000) {
-            fs.appendFileSync(curveFileName, buffer.data);
-            buffer.count = 0;
-            buffer.data = "";
-        }
+    buffer.count += 1;
+    if (value == defaultNull) {
+        buffer.data += index + " null" + "\n";
+    }
+    else {
+        buffer.data += index + " " + value + "\n";
+    }
+    if (buffer.count >= 1000) {
+        fs.appendFileSync(curveFileName, buffer.data);
+        buffer.count = 0;
+        buffer.data = "";
+    }
 }
 
-function encoding(pathsCurve, curvesName, callbackGetPaths) {
-    let paths = new Object();
+function encoding(pathsCurve, curvesName) {
     let output;
     curvesName.forEach(function (curveName) {
         let dirs = pathsCurve[curveName].split('/');
@@ -33,14 +33,12 @@ function encoding(pathsCurve, curvesName, callbackGetPaths) {
         output = dirs + '.enc.txt';
         cryptorFile.encryptFile(pathsCurve[curveName], output, secret, optionsEncode, function (err) {
             if (err) return console.log(err);
-
+            deleteFile(pathsCurve[curveName]);
         });
-        paths[curveName] = output;
     });
-    callbackGetPaths(paths);
 }
 
-function extractCurves(inputURL, datasetName, defaultNull, pathsCallBack) {
+function extractCurves(inputURL, datasetName, defaultNull, callbackGetPaths) {
     let rl = new readline(inputURL);
     let curveNames = new Array();
     let count = 0;
@@ -71,7 +69,7 @@ function extractCurves(inputURL, datasetName, defaultNull, pathsCallBack) {
                 line = line.replace(/([0-9]):([0-9])/g, "$1=$2");
                 let dotPosition = line.indexOf('.');
                 let fieldName = line.substring(0, dotPosition);
-                if(/DEPTH/g.test(fieldName.toUpperCase())) {
+                if (/DEPTH/g.test(fieldName.toUpperCase())) {
 
                 }
                 else if (curveNames) {
@@ -82,7 +80,7 @@ function extractCurves(inputURL, datasetName, defaultNull, pathsCallBack) {
 
         else if (/^[0-9][0-9]/g.test(line)) {
             let spacePosition = line.indexOf(' ');
-            line= line.substring(spacePosition, line.length).trim();
+            line = line.substring(spacePosition, line.length).trim();
             let fields = line.split(" ");
             if (curveNames) {
                 curveNames.forEach(function (curveName, i) {
@@ -94,23 +92,30 @@ function extractCurves(inputURL, datasetName, defaultNull, pathsCallBack) {
     });
     rl.on('end', function () {
         if (curveNames) {
-            curveNames.forEach(function (curveName) {
+            async.each(curveNames, function (curveName, callback) {
                 fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
+                callback();
+            }, function (err) {
+                if (err) return callbackGetPaths(err, null, null);
+                //deleteFile(inputURL);
+                callbackGetPaths(false, filePaths, curveNames);
             });
         }
-        pathsCallBack(filePaths, curveNames);
         console.log("ExtractCurvesFromLAS done");
     });
 
     rl.on('error', function (err) {
-        if (err) console.log("ExtractCurves has error", err);
+        if (err) {
+            console.log("ExtractCurves has error", err);
+            callbackGetPaths(err, null, null);
+        }
     });
 }
 
 function getUniqueIdForDataset(sections) {
     let datasetName;
     sections.forEach(function (section) {
-        if(/~WELL/g.test(section.name.toUpperCase())) {
+        if (/~WELL/g.test(section.name.toUpperCase())) {
             section.content.forEach(function (item) {
                 if (item.name.toUpperCase().trim() == "WELL") {
                     datasetName = item.data;
@@ -121,7 +126,7 @@ function getUniqueIdForDataset(sections) {
     return datasetName;
 }
 
-function extractWell(inputURL, resultCallback, options) {
+function extractWell(inputURL, resultCallback) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
@@ -191,24 +196,24 @@ function extractWell(inputURL, resultCallback, options) {
             sections.forEach(function (section) {
                 if (/CURVE/g.test(section.name)) {
                     section.content.shift();
-                    extractCurves(inputURL, datasetName, defaultNull, function (pathsCurve, curvesName) {
-                            if (curvesName) {
-                                curvesName.forEach(function (curveName, i) {
-                                    section.content[i].data = pathsCurve[curveName];
-                                });
-                            }
-
+                    extractCurves(inputURL, datasetName, defaultNull, function (err, paths, curvesName) {
+                        if (err) return resultCallback(err, null);
+                        encoding(paths, curvesName);
                     });
                 }
             });
         }
-        resultCallback(sections);
+        resultCallback(false, sections);
     });
+
+    rl.on('error', function (err) {
+        if (err) return resultCallback(err, null);
+    })
 }
 
 function deleteFile(inputURL) {
     fs.unlink(inputURL, function (err) {
-        if(err) return console.log(err);
+        if (err) return console.log(err);
     });
 }
 

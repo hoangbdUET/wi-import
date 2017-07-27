@@ -15,8 +15,9 @@ module.exports.getBasePath = function (path) {
 };
 
 module.exports.extractLAS2 = function (inputURL, callback) {
-    extractLAS2.extractWell(inputURL, function (result) {
-        callback(result);
+    extractLAS2.extractWell(inputURL, function (err, result) {
+        if(err) return callback(err, null);
+        callback(false, result);
     });
 };
 
@@ -24,12 +25,9 @@ module.exports.deleteFile = function (inputURL) {
     extractLAS2.deleteFile(inputURL);
 };
 
-module.exports.decoding = function (inputURL, callback) {
-    decoding.decoding(inputURL, function (err, data) {
-        if(err) return callback(err, null);
-        callback(false, data);
-    });
-}
+module.exports.decoding = function (data) {
+    return decoding.decoding(data);
+};
 
 module.exports.extractASC = function (inputURL, callback, options) {
     extractASC.extractFromASC(inputURL, function (result) {

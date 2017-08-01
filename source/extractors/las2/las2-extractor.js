@@ -39,7 +39,7 @@ function encoding(pathsCurve, curvesName) {
     });
 }
 
-function extractCurves(inputURL) {
+function extractCurves__(inputURL) {
     let rl = new readline(inputURL);
     let curvesName = new Array();
     let count = 0;
@@ -147,7 +147,7 @@ function getUniqueIdForDataset(sections) {
     return datasetName;
 }
 
-function extractWell(inputURL, callbackSections) {
+function extractWell__(inputURL, callbackSections) {
     let rl = new readline(inputURL);
     let sections = new Array();
     let currentSection = null;
@@ -234,6 +234,158 @@ function extractAll(inputURL, callbackGetSections) {
         callbackGetSections(false, sections);
     });
 
+}
+
+function extractCurves(inputURL, datasetName, defaultNull, pathsCallBack) {
+    let rl = new readline(inputURL);
+    let curveNames = new Array();
+    let count = 0;
+    let BUFFERS = new Object();
+    let filePaths = new Object();
+    let nameSection;
+
+    rl.on('line', function (line) {
+        line = line.trim();
+        line = line.replace(/\s+\s/g, " ");
+        if (/^~A|^~ASCII/g.test(line.toUpperCase())) {
+            if (curveNames) {
+                curveNames.forEach(function (curveName) {
+                    BUFFERS[curveName] = {
+                        count: 0,
+                        data: ""
+                    };
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, datasetName + curveName, curveName + '.txt');
+                    fs.writeFileSync(filePaths[curveName], "");
+                });
+            }
+        }
+        else if (/^~/g.test(line.toUpperCase())) {
+            nameSection = line.toUpperCase();
+        }
+        else if (/^[A-z]/g.test(line)) {
+            if (/CURVE/g.test(nameSection)) {
+                line = line.replace(/([0-9]):([0-9])/g, "$1=$2");
+                let dotPosition = line.indexOf('.');
+                let fieldName = line.substring(0, dotPosition);
+                if(/DEPTH/g.test(fieldName.toUpperCase())) {
+
+                }
+                else if (curveNames) {
+                    curveNames.push(fieldName.trim());
+                }
+            }
+        }
+
+        else if (/^[0-9][0-9]/g.test(line)) {
+            let spacePosition = line.indexOf(' ');
+            line= line.substring(spacePosition, line.length).trim();
+            let fields = line.split(" ");
+            if (curveNames) {
+                curveNames.forEach(function (curveName, i) {
+                    writeToCurveFile(BUFFERS[curveName], filePaths[curveName], count, fields[i], defaultNull);
+                });
+                count++;
+            }
+        }
+    });
+    rl.on('end', function () {
+        if (curveNames) {
+            curveNames.forEach(function (curveName) {
+                fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
+            });
+        }
+        pathsCallBack(filePaths, curveNames);
+        console.log("ExtractCurvesFromLAS done");
+    });
+
+    rl.on('error', function (err) {
+        if (err) console.log("ExtractCurves has error", err);
+    });
+}
+
+function extractWell(inputURL, resultCallback) {
+    let rl = new readline(inputURL);
+    let sections = new Array();
+    let currentSection = null;
+    let defaultNull = null;
+    rl.on('line', function (line) {
+        line = line.trim();
+        if (/^~A/.test(line)) { //
+            // end case
+            rl.close();
+        }
+        else if (line === '') { // skip blank line
+        }
+        else if (/^#/.test(line)) { // skip line with leading '#'
+        }
+        else if (/^~/.test(line)) { // beginning of a section
+            if (currentSection) {
+                sections.push(currentSection);
+            }
+
+            currentSection = new Object();
+            currentSection.name = line.toUpperCase();
+            currentSection.content = new Array();
+        }
+        else {
+            if (currentSection) {
+                if (/[A-z]/.test(line)) {
+                    line = line.replace(/([0-9]):([0-9])/g, "$1=$2");
+                    let dotPosition = line.indexOf('.');
+                    let fieldName = line.substring(0, dotPosition);
+                    let remainingString = line.substring(dotPosition, line.length).trim();
+                    let firstSpaceAfterDotPos = remainingString.indexOf(' ');
+                    let secondField = remainingString.substring(1, firstSpaceAfterDotPos);
+                    remainingString = remainingString.substring(firstSpaceAfterDotPos, remainingString.length).trim();
+                    let colonPosition = remainingString.indexOf(':');
+
+                    if (colonPosition < 0) {
+                        colonPosition = remainingString.length;
+                    }
+                    let fieldDescription = remainingString.substring(colonPosition, remainingString.length);
+                    let thirdField = remainingString.substring(0, colonPosition).trim();
+                    thirdField = thirdField.replace(/([0-9])=([0-9])/g, '$1:$2');
+                    if (/NULL/g.test(fieldName.toUpperCase())) {
+                        defaultNull = thirdField;
+                    }
+                    if (/^\./.test(secondField)) {
+                        secondField = "";
+                    }
+                    currentSection.content.push({
+                        name: fieldName.trim(),
+                        unit: secondField.trim(),
+                        data: thirdField,
+                        description: fieldDescription.trim()
+                    });
+                }
+            }
+        }
+
+    });
+    rl.on('end', function () {
+        if (currentSection) {
+            sections.push(currentSection);
+        }
+
+        let datasetName = getUniqueIdForDataset(sections);
+
+        if (sections) {
+            sections.forEach(function (section) {
+                if (/CURVE/g.test(section.name)) {
+                    section.content.shift();
+                    extractCurves(inputURL, datasetName, defaultNull, function (pathsCurve, curvesName) {
+                        if (curvesName) {
+                            curvesName.forEach(function (curveName, i) {
+                                section.content[i].data = pathsCurve[curveName];
+                            });
+                        }
+
+                    });
+                }
+            });
+        }
+        resultCallback(sections);
+    });
 }
 
 function deleteFile(inputURL) {

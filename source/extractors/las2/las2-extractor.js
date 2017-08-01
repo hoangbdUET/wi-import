@@ -80,14 +80,14 @@ function extractCurves(inputURL) {
                 }
             }
             else if (/WELL/.test(nameSection)) {
-                if (/WELL/.test(line)) {
+                if (/^WELL/.test(line)) {
                     let dotPosition = line.indexOf('.');
                     let colon = line.indexOf(':');
-                    let wellString = line.substr(dotPosition + 1, colon);
+                    let wellString = line.substring(dotPosition + 1, colon);
                     wellString = wellString.trim();
                     datasetName = wellString;
                 }
-                else if (/NULL/.test(line)) {
+                else if (/^NULL/.test(line)) {
                     let dotPosition = line.indexOf('.');
                     let colon = line.indexOf(':');
                     let nullString = line.substring(dotPosition + 1,colon);

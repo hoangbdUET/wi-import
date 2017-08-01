@@ -95,7 +95,6 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
     var MyTransform = new Transform({
         writableObjectMode: true,
         transform: function (chunk, encoding, callback) {
-            chunk = decoding(chunk);
             var tokens = chunk.toString().split(" ");
             if (!this._started_) {
                 if (beginFragment) this.push(beginFragment);

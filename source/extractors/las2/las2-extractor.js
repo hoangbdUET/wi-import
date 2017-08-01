@@ -115,7 +115,7 @@ function extractCurves(inputURL) {
                 fs.appendFileSync(filePaths[curveName], BUFFERS[curveName].data);
                 callback();
             }, function (err) {
-                if (err) return callbackGetPaths(err, null, null);
+                if (err) return console.log("ExtractCurves has error", err);
                 deleteFile(inputURL);
                 //encoding(filePaths, curvesName);
                 //callbackGetPaths(false, filePaths, curvesName);

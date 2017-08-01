@@ -14,11 +14,22 @@ module.exports.getBasePath = function (path) {
     return extractLAS2.getBasePath();
 };
 
-module.exports.extractLAS2 = function (inputURL, callback) {
+module.exports.extractWellLAS2 = function (inputURL, callback) {
     extractLAS2.extractWell(inputURL, function (err, result) {
         if(err) return callback(err, null);
         callback(false, result);
     });
+};
+
+module.exports.extractLAS2 = function (inputURL, callback) {
+    extractLAS2.extractAll(inputURL, function (err, result) {
+        if(err) return callback(err, null);
+        callback(false, result);
+    });
+};
+
+module.exports.extractCurveLAS2 = function (inputURL) {
+    extractLAS2.extractCurves(inputURL);
 };
 
 module.exports.deleteFile = function (inputURL) {

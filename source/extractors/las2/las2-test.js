@@ -2,8 +2,8 @@
 let extractor = require('./las2-extractor.js');
 //let url = '../../../sample-data/las-2.0/Las_20.las';
 //let url = '../../../sample-data/las-2.0/1X_geolog_2.0.las';
-let url = '../../../sample-data/las-2.0/1X_IP_20.las';
-//let url = '../../../sample-data/las-2.0/1X_Techlog_20.las';
+//let url = '../../../sample-data/las-2.0/1X_IP_20.las';
+let url = '../../../sample-data/las-2.0/1X_Techlog_20.las';
 //let url = '../../../sample-data/las-2.0/1X_WI_20.las';
 
 extractor.setBasePath('./data');

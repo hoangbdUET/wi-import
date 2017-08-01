@@ -90,7 +90,7 @@ function extractCurves(inputURL) {
                 else if (/NULL/.test(line)) {
                     let dotPosition = line.indexOf('.');
                     let colon = line.indexOf(':');
-                    let nullString = line.substr(dotPosition + 1, colon);
+                    let nullString = line.substring(dotPosition + 1,colon);
                     nullString = nullString.trim();
                     defaultNull = nullString;
                 }
@@ -116,7 +116,7 @@ function extractCurves(inputURL) {
                 callback();
             }, function (err) {
                 if (err) return callbackGetPaths(err, null, null);
-                //deleteFile(inputURL);
+                deleteFile(inputURL);
                 //encoding(filePaths, curvesName);
                 //callbackGetPaths(false, filePaths, curvesName);
             });

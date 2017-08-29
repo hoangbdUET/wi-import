@@ -6,6 +6,7 @@ var Transform = require('stream').Transform;
 const LEN = 8;
 var decrypto = require('./extractors/crypto-file/decrypto');
 let async = require('async');
+
 function createDirSync(basePath, hash, dir) {
     dir.push(hash.substr(0, LEN));
     try {
@@ -13,7 +14,7 @@ function createDirSync(basePath, hash, dir) {
     }
     catch (err) {
         if (err.errno !== -17) {
-            console.log(err);
+            console.log(err.message);
         }
     }
     return hash.substr(LEN);
@@ -64,16 +65,19 @@ function createReadStream(basePath, hashString, fileName) {
     var dirs = [];
 
     while (hash.length > 0) {
-        hash = createDirSync(basePath, hash, dirs);
+        dirs.push(hash.substr(0, LEN));
+        hash = hash.substr(LEN);
     }
-    console.log(basePath + '/' + dirs.join('/') + '/' + fileName);
-    try {
-        var stream = fs.createReadStream(basePath + '/' + dirs.join('/') + '/' + fileName, {flags: 'r'});
-        return stream;
-    }
-    catch (err) {
-        return null;
-    }
+    // while (hash.length > 0) {
+    //     hash = createDirSync(basePath, hash, dirs);
+    // }
+    console.log("CreateReadStream File : " + basePath + '/' + dirs.join('/') + '/' + fileName);
+    var stream = fs.createReadStream(basePath + '/' + dirs.join('/') + '/' + fileName, {flags: 'r'});
+    stream.on('error', function (err) {
+        //handler create stream error
+        console.log("CreateReadStream File err : " + err);
+    })
+    return stream;
 }
 
 function getHashPath(basePath, hashString, fileName) {
@@ -87,9 +91,59 @@ function getHashPath(basePath, hashString, fileName) {
     }
     return basePath + '/' + dirs.join('/') + '/' + fileName;
 }
+
 module.exports.getHashPath = getHashPath;
 module.exports.createPath = createPath;
 module.exports.createReadStream = createReadStream;
+
+function deleteFolderRecursive(path) {
+    var files = [];
+    if( fs.existsSync(path) ) {
+        files = fs.readdirSync(path);
+        files.forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
+module.exports.copyFile = function (basePath, srcHashPath, desPath, fileName) {
+    var result = true;
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(desPath);
+    var desHash = md5sum.digest('hex');
+    var dir = [];
+    while (desHash.length > 0) {
+        desHash = createDirSync(basePath, desHash, dir);
+    }
+    var newFile = basePath + '/' + dir.join('/') + '/' + fileName;
+    //change this if error
+    var cp = fs.createReadStream(srcHashPath);
+    cp.on('error', function (err) {
+        //handler create stream error
+        result = false;
+        console.log("Copy File err : " + err);
+
+    });
+    cp.pipe(fs.createWriteStream(newFile));
+    return result;
+
+}
+
+module.exports.deleteFolder = function (basePath, hashString) {
+    var result = true;
+    var md5sum = crypto.createHash('md5');
+    md5sum.update(hashString);
+    var path = basePath + '/' + md5sum.digest('hex').substr(0, 8);
+    deleteFolderRecursive(path);
+    console.log("Delete : " + path);
+    return null;
+}
 
 module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment) {
     var MyTransform = new Transform({
@@ -116,6 +170,7 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
     if (!readStream) return null;
 
     return byline.createStream(readStream).pipe(MyTransform);
+
 }
 
 function DeCodeData(basePath, hashString, fileName, callback) {
@@ -138,4 +193,5 @@ function DeCodeData(basePath, hashString, fileName, callback) {
 
     });
 }
+
 module.exports.DeCodeData = DeCodeData;

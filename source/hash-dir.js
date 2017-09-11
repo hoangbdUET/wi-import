@@ -14,7 +14,7 @@ function createDirSync(basePath, hash, dir) {
     }
     catch (err) {
         if (err.errno !== -17) {
-            console.log(err.message);
+            //console.log(err.message);
         }
     }
     return hash.substr(LEN);
@@ -47,6 +47,7 @@ module.exports.createWriteStream = function (basePath, hashString, fileName) {
 }
 
 function createPath(basePath, hashString, fileName) {
+    //console.log("HASHSTRING : " + hashString);
     var md5sum = crypto.createHash('md5');
     md5sum.update(hashString);
     var hash = md5sum.digest('hex');
@@ -98,11 +99,11 @@ module.exports.createReadStream = createReadStream;
 
 function deleteFolderRecursive(path) {
     var files = [];
-    if( fs.existsSync(path) ) {
+    if (fs.existsSync(path)) {
         files = fs.readdirSync(path);
-        files.forEach(function(file,index){
+        files.forEach(function (file, index) {
             var curPath = path + "/" + file;
-            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+            if (fs.lstatSync(curPath).isDirectory()) { // recurse
                 deleteFolderRecursive(curPath);
             } else { // delete file
                 fs.unlinkSync(curPath);

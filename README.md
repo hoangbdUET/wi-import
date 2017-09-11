@@ -14,5 +14,3 @@ In `wi-import` has three function for file .Las, include Las2 and Las3
 
 ```javascript
 var extract
-
-##test commit

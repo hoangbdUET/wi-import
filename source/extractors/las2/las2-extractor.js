@@ -49,7 +49,7 @@ function getLASVersion(inputURL, callback) {
 }
 
 
-function extractCurves(inputURL, callback) {
+function extractCurves(inputURL, moreUploadData, callback) {
     let rl = new readline(inputURL);
     let sectionName = "";
     let datasetsName = [];
@@ -96,7 +96,7 @@ function extractCurves(inputURL, callback) {
                 unit = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                 curve.name = curveName;
                 curve.unit = unit;
-                curve.datasetname = wellInfo.wellname;
+                curve.datasetname = moreUploadData.datasetName ? moreUploadData.datasetName : wellInfo.wellname;
                 curve.wellname = wellInfo.wellname;
                 curve.initValue = "abc";
                 curve.family = "VNU";
@@ -106,7 +106,8 @@ function extractCurves(inputURL, callback) {
                         count: 0,
                         data: ""
                     };
-                    filePaths[curveName] = hashDir.createPath(__config.basePath, curve.datasetname + curveName, curveName + '.txt');
+                    let wellName = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
+                    filePaths[curveName] = hashDir.createPath(__config.basePath, moreUploadData.projectName + wellName + curve.datasetname + curveName, curveName + '.txt');
                     fs.writeFileSync(filePaths[curveName], "");
                     curve.path = filePaths[curveName];
                     curves.push(curve);
@@ -246,13 +247,13 @@ function extractWell(inputURL, callback) {
 
 }
 
-function extractAll(inputURL, callbackGetSections) {
+function extractAll(inputURL, moreUploadData, callbackGetSections) {
     getLASVersion(inputURL, function (err, result) {
         if (err) {
             callbackGetSections(err, result);
         } else {
             if (result.lasVersion == 2) {
-                extractCurves(inputURL, function (err, info) {
+                extractCurves(inputURL, moreUploadData, function (err, info) {
                     if (err) callbackGetSections(err, null);
                     callbackGetSections(false, info);
                 });

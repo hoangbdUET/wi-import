@@ -22,9 +22,9 @@ module.exports.extractWellLAS2 = function (inputURL, callback) {
     });
 };
 
-module.exports.extractLAS2 = function (inputURL, callback) {
+module.exports.extractLAS2 = function (inputURL, moreUploadData, callback) {
     //console.log("Extract all call");
-    extractLAS2.extractAll(inputURL, function (err, result) {
+    extractLAS2.extractAll(inputURL, moreUploadData, function (err, result) {
         if (err) return callback(err, null);
         //console.log(result);
         callback(false, result);
@@ -35,9 +35,9 @@ module.exports.extractCurveLAS2 = function (inputURL) {
     extractLAS2.extractCurves(inputURL);
 };
 
-module.exports.extractLAS3 = function (inputURL, callback) {
+module.exports.extractLAS3 = function (inputURL, moreUploadData, callback) {
     console.log("Extract all 3.0 ");
-    extractLAS3.extractCurves(inputURL, function (err, result) {
+    extractLAS3.extractCurves(inputURL, moreUploadData, function (err, result) {
         //console.log(result);
         if (err) {
             callback(err, null);
@@ -47,7 +47,7 @@ module.exports.extractLAS3 = function (inputURL, callback) {
     });
 }
 module.exports.extractInfoOnly = function (inputURL, callback) {
-    console.log("Get info LAS only");
+    //console.log("Get info LAS only");
     extractLAS2.getLASVersion(inputURL, function (err, result) {
         if (err) return callback(err, null);
         if (result.lasVersion == 2) {
@@ -57,14 +57,15 @@ module.exports.extractInfoOnly = function (inputURL, callback) {
                 callback(false, result);
             })
         } else if (result.lasVersion == 3) {
-            console.log("GET INFO ONLY LAS 3")
-            extractLAS3.extractInfoOnly(inputURL, function (err, result) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    callback(false, result);
-                }
-            });
+            console.log("GET INFO ONLY LAS 3");
+            // extractLAS3.extractInfoOnly(inputURL, function (err, result) {
+            //     if (err) {
+            //         callback(err, null);
+            //     } else {
+            //         callback(false, result);
+            //     }
+            // });
+            callback('LAS3', null);
         }
     });
 }

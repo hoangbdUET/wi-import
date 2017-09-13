@@ -1,6 +1,6 @@
 {
   "name": "wi-import",
-  "version": "1.0.34",
+  "version": "1.0.35",
   "dependencies": {
     "async": "^2.5.0",
     "byline": "^5.0.0",

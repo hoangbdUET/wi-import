@@ -76,12 +76,13 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 let curve = new Object();
                 let curveName = "";
                 let unit = "";
+                let wellName = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
                 curveName = line.substring(0, line.indexOf('.')).trim();
                 unit = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                 curve.name = curveName;
                 curve.unit = unit;
                 curve.datasetname = wellInfo.wellname;
-                curve.wellname = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
+                curve.wellname = wellInfo.wellname;
                 curve.initValue = "abc";
                 curve.family = "VNU";
                 curve.idDataset = null;
@@ -91,7 +92,6 @@ function extractCurves(inputURL, moreUploadData, callback) {
                         count: 0,
                         data: ""
                     };
-                    let wellName = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
                     filePaths[curveName] = hashDir.createPath(__config.basePath, moreUploadData.projectName + wellName + curve.datasetname + curveName, curveName + '.txt');
                     fs.writeFileSync(filePaths[curveName], "");
                     curve.path = filePaths[curveName];
@@ -104,6 +104,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 let curve = new Object();
                 let unit = "";
                 let curveName = "";
+                let wellName = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
                 curveName = line.substring(0, line.indexOf('.')).trim();
                 unit = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                 curve.name = curveName;
@@ -118,7 +119,6 @@ function extractCurves(inputURL, moreUploadData, callback) {
                         count: 0,
                         data: ""
                     };
-                    let wellName = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
                     curve.datasetname = moreUploadData.datasetName ? moreUploadData.datasetName : datasetName;
                     filePaths[curveName] = hashDir.createPath(__config.basePath, moreUploadData.projectName + wellName + curve.datasetname + curveName, curveName + '.txt');
                     fs.writeFileSync(filePaths[curveName], "");

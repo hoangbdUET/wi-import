@@ -50,6 +50,7 @@ function getLASVersion(inputURL, callback) {
 
 
 function extractCurves(inputURL, moreUploadData, callback) {
+    // /console.log(moreUploadData.curves);
     let rl = new readline(inputURL);
     let sectionName = "";
     let datasetsName = [];
@@ -108,8 +109,6 @@ function extractCurves(inputURL, moreUploadData, callback) {
                         count: 0,
                         data: ""
                     };
-                    //console.log("Well Name : " + wellName);
-                    //console.log("Dataset Name : " + curve.datasetname);
                     filePaths[curveName] = hashDir.createPath(__config.basePath, moreUploadData.projectName + wellName + curve.datasetname + curveName, curveName + '.txt');
                     fs.writeFileSync(filePaths[curveName], "");
                     curve.path = filePaths[curveName];
@@ -122,7 +121,16 @@ function extractCurves(inputURL, moreUploadData, callback) {
             let fields = line.split(' ');
             if (curves) {
                 curves.forEach(function (curve, i) {
-                    writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
+                    //console.log(moreUploadData.curves.indexOf(curve.name));
+                    if(moreUploadData.curves) {
+                        if (moreUploadData.curves.indexOf(curve.name) != -1) {
+                            writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
+                        } else {
+                            curves.splice(i, 1);
+                        }
+                    } else {
+                        writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
+                    }
                 });
                 count++;
             }
@@ -131,7 +139,6 @@ function extractCurves(inputURL, moreUploadData, callback) {
     rl.on('end', function () {
         deleteFile(inputURL);
         wellInfo.datasetInfo = [];
-        //fix write full curve data
         curves.forEach(function (curve, i) {
             fs.appendFileSync(curve.path, BUFFERS[curve.name].data);
         });
@@ -141,7 +148,6 @@ function extractCurves(inputURL, moreUploadData, callback) {
             datasetLabel: moreUploadData.datasetName ? moreUploadData.datasetName : wellInfo.wellname,
             curves: null
         }
-        //console.log(curves);
         dataset.curves = curves;
         wellInfo.datasetInfo.push(dataset);
         callback(false, wellInfo);

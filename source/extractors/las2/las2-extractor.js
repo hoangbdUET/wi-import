@@ -68,15 +68,14 @@ function extractCurves(inputURL, moreUploadData, callback) {
             sectionName = line;
         } else if (/^[A-z]/.test(line)) {
             if (/WELL/.test(sectionName)) {
-                let wellname = moreUploadData.fileName;
+                //wellInfo.wellname = "";
                 let start = "";
                 let stop = "";
                 let step = "";
                 let NULL = "";
-                wellInfo.wellname = wellname;
+                //wellInfo.wellname = moreUploadData.fileName;
                 if ((/WELL/).test(line) && !/UWI/.test(line)) {
-                    wellname = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
-                    wellInfo.wellname = wellname;
+                    wellInfo.wellname = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                 } else if (/STRT/.test(line)) {
                     start = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
                     wellInfo.start = start;

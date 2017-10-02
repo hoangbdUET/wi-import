@@ -67,15 +67,14 @@ function extractCurves(inputURL, moreUploadData, callback) {
         if (/^~/.test(line)) {
             sectionName = line;
         } else if (/^[A-z]/.test(line)) {
-            let hasWellName = false;
             if (/WELL/.test(sectionName)) {
-                let wellname = "";
+                let wellname = moreUploadData.fileName;
                 let start = "";
                 let stop = "";
                 let step = "";
                 let NULL = "";
+                wellInfo.wellname = wellname;
                 if ((/WELL/).test(line) && !/UWI/.test(line)) {
-                    hasWellName = true;
                     wellname = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                     wellInfo.wellname = wellname;
                 } else if (/STRT/.test(line)) {
@@ -92,22 +91,12 @@ function extractCurves(inputURL, moreUploadData, callback) {
                     wellInfo.null = NULL;
                 }
             } else if (/CURVE/.test(sectionName)) {
-                if (moreUploadData.wellName) {
-                    wellInfo.wellname = moreUploadData.wellName;
-                } else {
-                    if (!hasWellName) {
-                        wellInfo.wellname = moreUploadData.fileName;
-                    }
-                }
+                wellInfo.wellname = moreUploadData.wellName ? moreUploadData.wellName : wellInfo.wellname;
                 let curve = new Object();
                 let curveName = "";
                 let unit = "";
                 curveName = line.substring(0, line.indexOf('.')).trim();
-                if (line.indexOf('00')) {
-                    unit = line.substring(line.indexOf('.') + 1, line.indexOf(' ')).trim();
-                } else {
-                    unit = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
-                }
+                unit = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                 curve.name = curveName;
                 curve.unit = unit;
                 curve.datasetname = moreUploadData.datasetName ? moreUploadData.datasetName : wellInfo.wellname;

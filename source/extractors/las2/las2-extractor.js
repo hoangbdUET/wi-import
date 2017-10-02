@@ -57,6 +57,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
     let curves = [];
     let count = 0;
     let wellInfo = new Object();
+	wellInfo.wellname = moreUploadData.fileName;
     let filePaths = new Object();
     let BUFFERS = new Object();
     rl.on('line', function (line) {

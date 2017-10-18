@@ -57,6 +57,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
     let curves = [];
     let count = 0;
     let wellInfo = new Object();
+    let tmpname = "Data";
     wellInfo.wellname = moreUploadData.fileName;
     let filePaths = new Object();
     let BUFFERS = new Object();
@@ -77,6 +78,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 //wellInfo.wellname = moreUploadData.fileName;
                 if ((/WELL/).test(line) && !/UWI/.test(line)) {
                     wellInfo.wellname = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
+                    tmpname = wellInfo.wellname;
                 } else if (/STRT/.test(line)) {
                     start = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
                     wellInfo.start = start;
@@ -101,7 +103,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 curve.name = curveName;
                 curve.unit = unit;
                 // curve.datasetname = moreUploadData.datasetName ? moreUploadData.datasetName : wellInfo.wellname;
-                curve.datasetname = moreUploadData.datasetName ? moreUploadData.datasetName : moreUploadData.wellName ? "Data" : wellInfo.wellname;
+                curve.datasetname = moreUploadData.datasetName ? moreUploadData.datasetName : moreUploadData.wellName ? tmpname : wellInfo.wellname;
                 curve.wellname = wellInfo.wellname;
                 curve.initValue = "abc";
                 curve.family = "VNU";
@@ -147,7 +149,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
         console.log("DATASET NAME ", moreUploadData.datasetName);
         console.log("WELL NAME ", moreUploadData.wellName);
         let dataset = {
-            name: moreUploadData.datasetName ? moreUploadData.datasetName : moreUploadData.wellName ? "Data" : wellInfo.wellname,
+            name: moreUploadData.datasetName ? moreUploadData.datasetName : moreUploadData.wellName ? tmpname : wellInfo.wellname,
             datasetKey: moreUploadData.datasetName ? moreUploadData.datasetName : wellInfo.wellname,
             datasetLabel: moreUploadData.datasetName ? moreUploadData.datasetName : wellInfo.wellname,
             curves: null

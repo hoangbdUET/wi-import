@@ -140,11 +140,11 @@ function extractCurves(inputURL, moreUploadData, callback) {
             //     });
             //     count++;
             // }
-            console.log(line);
+            // console.log(line);
             fields = fields.concat(line.trim().split(' '));
             if (fields.length > curves.length) {
                 if (curves) {
-                    console.log("====" + fields.join(' / '));
+                    // console.log("====" + fields.join(' / '));
                     curves.forEach(function (curve, i) {
                         writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i + 1], wellInfo.null);
                     });

@@ -61,6 +61,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
     wellInfo.wellname = moreUploadData.fileName;
     let filePaths = new Object();
     let BUFFERS = new Object();
+    let fields = [];
     rl.on('line', function (line) {
         line = line.trim();
         line = line.toUpperCase();
@@ -119,24 +120,37 @@ function extractCurves(inputURL, moreUploadData, callback) {
                     curves.push(curve);
                 }
             }
-        } else if (/^[0-9][0-9]/.test(line)) {
-            let spacePosition = line.indexOf(' ');
-            line = line.substring(spacePosition, line.length).trim();
-            let fields = line.split(' ');
-            if (curves) {
-                curves.forEach(function (curve, i) {
-                    //console.log(moreUploadData.curves.indexOf(curve.name));
-                    if (moreUploadData.curves) {
-                        if (moreUploadData.curves.indexOf(curve.name) != -1) {
-                            writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
-                        } else {
-                            curves.splice(i, 1);
-                        }
-                    } else {
-                        writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
-                    }
-                });
-                count++;
+        } else if (/^[0-9][0-9]/.test(line) || /^[0-9]/.test(line) || /^-[0-9]/.test(line)) {
+            // console.log(line);
+            // let spacePosition = line.indexOf(' ');
+            // line = line.substring(spacePosition, line.length).trim();
+            // let fields = line.split(' ');
+            // if (curves) {
+            //     curves.forEach(function (curve, i) {
+            //         //console.log(moreUploadData.curves.indexOf(curve.name));
+            //         if (moreUploadData.curves) {
+            //             if (moreUploadData.curves.indexOf(curve.name) != -1) {
+            //                 writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
+            //             } else {
+            //                 curves.splice(i, 1);
+            //             }
+            //         } else {
+            //             writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i], wellInfo.null);
+            //         }
+            //     });
+            //     count++;
+            // }
+            console.log(line);
+            fields = fields.concat(line.trim().split(' '));
+            if (fields.length > curves.length) {
+                if (curves) {
+                    console.log("====" + fields.join(' / '));
+                    curves.forEach(function (curve, i) {
+                        writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i + 1], wellInfo.null);
+                    });
+                    count++;
+                }
+                fields = [];
             }
         }
     });

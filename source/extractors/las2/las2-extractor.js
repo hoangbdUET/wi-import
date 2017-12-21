@@ -99,7 +99,11 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 let curveName = "";
                 let unit = "";
                 curveName = line.substring(0, line.indexOf('.')).trim();
-                unit = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
+                line = line.substring(line.indexOf('.') + 1);
+
+                if(curveName == 'DEPT' || curveName == 'DEPTH' || curveName == 'TIME') return;
+
+                unit = line.substring(0, line.indexOf(' ')).trim();
                 if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));
                 curve.name = curveName;
                 curve.unit = unit;

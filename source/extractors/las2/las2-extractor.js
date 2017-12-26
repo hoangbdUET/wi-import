@@ -77,19 +77,20 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 let step = "";
                 let NULL = "";
                 //wellInfo.wellname = moreUploadData.fileName;
-                if ((/WELL/).test(line) && !/UWI/.test(line)) {
+                if ((/^WELL/).test(line) && !/UWI/.test(line)) {
+                    // console.log("line ======= ", line);
                     wellInfo.wellname = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                     tmpname = wellInfo.wellname;
-                } else if (/STRT/.test(line)) {
+                } else if (/^STRT/.test(line)) {
                     start = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
                     wellInfo.start = start;
-                } else if (/STOP/.test(line)) {
+                } else if (/^STOP/.test(line)) {
                     stop = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
                     wellInfo.stop = stop;
-                } else if (/STEP/.test(line)) {
+                } else if (/^STEP/.test(line)) {
                     step = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
                     wellInfo.step = step;
-                } else if (/NULL/.test(line)) {
+                } else if (/^NULL/.test(line)) {
                     NULL = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
                     wellInfo.null = NULL;
                 }

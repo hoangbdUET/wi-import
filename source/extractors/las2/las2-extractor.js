@@ -79,19 +79,19 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 //wellInfo.wellname = moreUploadData.fileName;
                 if ((/^WELL/).test(line) && !/UWI/.test(line)) {
                     // console.log("line ======= ", line);
-                    wellInfo.wellname = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
+                    wellInfo.wellname = line.substring(line.indexOf(' ', line.indexOf('.')), line.indexOf(':')).trim();
                     tmpname = wellInfo.wellname;
                 } else if (/^STRT/.test(line)) {
-                    start = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
+                    start = line.substring(line.indexOf(' ', line.indexOf('.')), line.indexOf(':')).trim();
                     wellInfo.start = start;
                 } else if (/^STOP/.test(line)) {
-                    stop = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
+                    stop = line.substring(line.indexOf(' ', line.indexOf('.')), line.indexOf(':')).trim();
                     wellInfo.stop = stop;
                 } else if (/^STEP/.test(line)) {
-                    step = line.substring(line.indexOf('.') + 2, line.indexOf(':')).trim();
+                    step = line.substring(line.indexOf(' ', line.indexOf('.')), line.indexOf(':')).trim();
                     wellInfo.step = step;
                 } else if (/^NULL/.test(line)) {
-                    NULL = line.substring(line.indexOf('.') + 1, line.indexOf(':')).trim();
+                    NULL = line.substring(line.indexOf(' ', line.indexOf('.')), line.indexOf(':')).trim();
                     wellInfo.null = NULL;
                 }
             } else if (/CURVE/.test(sectionName)) {
@@ -102,7 +102,7 @@ function extractCurves(inputURL, moreUploadData, callback) {
                 curveName = line.substring(0, line.indexOf('.')).trim();
                 line = line.substring(line.indexOf('.') + 1);
 
-                if(curveName == 'DEPT' || curveName == 'DEPTH' || curveName == 'TIME') return;
+                if (curveName == 'DEPT' || curveName == 'DEPTH' || curveName == 'TIME') return;
 
                 unit = line.substring(0, line.indexOf(' ')).trim();
                 if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));

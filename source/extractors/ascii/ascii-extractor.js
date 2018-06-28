@@ -4,7 +4,6 @@ const readline = require('line-by-line');
 const fs = require('fs');
 let hashDir = require('../hash-dir');
 const config = require('config');
-const s3 = require('../../server/s3');
 
 function writeToCurveFile(buffer, curveFilePath, index, value, defaultNull) {
     buffer.count ++;

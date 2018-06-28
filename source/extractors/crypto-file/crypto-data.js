@@ -6,11 +6,13 @@ let cypher = CONFIG.cypher;
 let formatEncrypt = CONFIG.formatEncrypt;
 let hash = CONFIG.hash;
 let codePublic = CONFIG.codePublic;
+
 function getCodePublic() {
     let publicHellMan = crypto.createDiffieHellman(512);
     let codePublic = publicHellMan.getPrime();
     return codePublic;
 }
+
 let fs = require('fs');
 
 //client request for server to getData
@@ -21,10 +23,11 @@ function getServerHellMan() {
     serverHellMan.generateKeys();
     let server = {
         serverHellMan: serverHellMan,
-        serverPubKey:serverHellMan.getPublicKey()
+        serverPubKey: serverHellMan.getPublicKey()
     };
     return server;
 }
+
 //server use clientKeyPub to create common key. Then encrypto data use commonkey
 function getServerSecret(clientPubKey, server) {
     let serverSecret = server.serverHellMan.computeSecret(clientPubKey);
@@ -39,10 +42,11 @@ function getClientHellMan() {
     clientHellMan.generateKeys();
     let client = {
         clientHellMan: clientHellMan,
-        clientPubKey:clientHellMan.getPublicKey()
+        clientPubKey: clientHellMan.getPublicKey()
     };
     return client;
 }
+
 //client use serverKeyPub to create common key. Then use common key to unlock data and decrypto data
 function getClientSecret(serverPubKey, client) {
     let clientSecret = client.clientHellMan.computeSecret(serverPubKey);
@@ -51,7 +55,7 @@ function getClientSecret(serverPubKey, client) {
 
 function encrypt(input, clientPubKey, server) {
     let serverPubKey = server.serverPubKey;
-    let serverSecret = getServerSecret(clientPubKey,server);
+    let serverSecret = getServerSecret(clientPubKey, server);
     let serverHashedSecret = crypto.createHash(hash).update(serverSecret).digest(formatEncrypt);
     console.log('chia khoa server', serverHashedSecret);
     const cipher = crypto.createCipher(cypher, serverHashedSecret);
@@ -59,15 +63,15 @@ function encrypt(input, clientPubKey, server) {
     encrypted += cipher.final(formatEncrypt);
     let response = {
         cypher: cypher,
-        formatEncrypt:formatEncrypt,
-        hash:hash,
-        serverPubKey:serverPubKey,
-        dataEncrypted:encrypted
+        formatEncrypt: formatEncrypt,
+        hash: hash,
+        serverPubKey: serverPubKey,
+        dataEncrypted: encrypted
     };
     return response;
 }
 
-function decrypt(cypher,formatEncrypt, hash, input, serverPubKey, client) {
+function decrypt(cypher, formatEncrypt, hash, input, serverPubKey, client) {
     let clientSecret = getClientSecret(serverPubKey, client);
     let clientHashedSecret = crypto.createHash(hash).update(clientSecret).digest(formatEncrypt);
     console.log('chia khoa client ', clientHashedSecret);
@@ -78,7 +82,7 @@ function decrypt(cypher,formatEncrypt, hash, input, serverPubKey, client) {
 }
 
 function encryptFile(inFile, outFile, clientPubKey, server) {
-    let serverSecret = getServerSecret(clientPubKey,server);
+    let serverSecret = getServerSecret(clientPubKey, server);
     let serverHashedSecret = crypto.createHash(hash).update(serverSecret).digest(formatEncrypt);
     console.log('chia khoa server*****', serverHashedSecret);
     const cipher = crypto.createCipher(cypher, serverHashedSecret);
@@ -127,12 +131,12 @@ console.log('Response From Server encrypted ', response);
 console.log('getData in Client ', getData);
 */
 module.exports = {
-    getServerHellMan:getServerHellMan,
-    getClientHellMan:getClientHellMan,
-    getServerSecret:getServerSecret,
-    getClientSecret:getClientSecret,
-    encrypt:encrypt,
-    decrypt:decrypt,
-    encryptFile:encryptFile,
-    decryptFile:decryptFile
+    getServerHellMan: getServerHellMan,
+    getClientHellMan: getClientHellMan,
+    getServerSecret: getServerSecret,
+    getClientSecret: getClientSecret,
+    encrypt: encrypt,
+    decrypt: decrypt,
+    encryptFile: encryptFile,
+    decryptFile: decryptFile
 };

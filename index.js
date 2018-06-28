@@ -1,51 +1,18 @@
 'use strict';
 
-let hashDir = require('./source/hash-dir');
 let extractLAS2 = require("./source/extractors/las2/las2-extractor");
 let extractLAS3 = require("./source/extractors/las3/las3-extractor");
 let extractASC = require("./source/extractors/ascii/ascii-extractor");
 let extractCSV = require("./source/extractors/csv/csv-extractor");
 let decoding = require("./source/extractors/crypto-file/decrypto");
 module.exports.setBasePath = function (path) {
-    extractLAS2.setBasePath(path);
-    extractASC.setBasePath(path);
+    require('./source/extractors/common-config').dataPath = path;
 };
 
 module.exports.getBasePath = function (path) {
-    return extractLAS2.getBasePath();
+    return require('./source/extractors/common-config').dataPath;
 };
 
-module.exports.extractWellLAS2 = function (inputURL, callback) {
-    extractLAS2.extractWell(inputURL, function (err, result) {
-        if (err) return callback(err, null);
-        callback(false, result);
-    });
-};
-
-module.exports.extractLAS2 = function (inputURL, moreUploadData, callback) {
-    //console.log("Extract all call");
-    extractLAS2.extractAll(inputURL, moreUploadData, function (err, result) {
-        if (err) return callback(err, null);
-        //console.log(result);
-        callback(false, result);
-    });
-};
-
-module.exports.extractCurveLAS2 = function (inputURL) {
-    extractLAS2.extractCurves(inputURL);
-};
-
-module.exports.extractLAS3 = function (inputURL, moreUploadData, callback) {
-    console.log("Extract all 3.0 ");
-    extractLAS3.extractCurves(inputURL, moreUploadData, function (err, result) {
-        //console.log(result);
-        if (err) {
-            callback(err, null);
-        } else {
-            callback(false, result);
-        }
-    });
-}
 module.exports.extractInfoOnly = function (inputURL, callback) {
     //console.log("Get info LAS only");
     extractLAS2.getLASVersion(inputURL, function (err, result) {
@@ -85,8 +52,11 @@ module.exports.extractASC = function (inputURL, callback, options) {
     }, options);
 };
 
+
+module.exports.LASExtractor = require('./source/extractors/las/las-extractor');
+
 module.exports.extractCSV = function (inputURL, projectId, wellId) {
     extractCSV.extractFromCSV(inputURL, projectId, wellId);
 };
 
-module.exports.hashDir = hashDir;
+module.exports.hashDir = require('./source/extractors/hash-dir');;

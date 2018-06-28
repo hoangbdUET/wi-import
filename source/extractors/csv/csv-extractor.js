@@ -3,7 +3,7 @@
 let readline = require('line-by-line');
 let fs = require('fs');
 let firstline = require('firstline');
-let hashDir = require('../../hash-dir');
+let hashDir = require('../hash-dir');
 
 function writeFromCsv(buffer, fileName, data, index) {
     buffer.count += 0;

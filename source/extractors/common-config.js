@@ -1,6 +1,6 @@
 'use strict';
 let __config = {
-    basePath: './data'
+    dataPath: './data'
 };
 
 module.exports = __config;

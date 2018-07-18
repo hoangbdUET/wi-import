@@ -69,7 +69,7 @@ function extractFromCSV(inputURL, importData) {
                     }
                     const hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + curve.name + curve.unit + curve.step;
                     filePathes[curve.name] = hashDir.createPath(config.dataPath, hashstr, curve.name + '.txt');
-                    curve.path = filePathes[curve.name];
+                    curve.path = filePathes[curve.name].replace(config.dataPath + '/', '');
                     fs.writeFileSync(filePathes[curve.name], "");
                     datasets[dataset.name].curves.push(curve);
                 }

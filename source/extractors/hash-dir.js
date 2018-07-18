@@ -155,7 +155,7 @@ module.exports.deleteFolder = function (basePath, hashString) {
     return null;
 }
 
-module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment) {
+module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment, cb) {
     var MyTransform = new Transform({
         writableObjectMode: true,
         transform: function (chunk, encoding, callback) {
@@ -178,10 +178,16 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
         }
     });
     var readStream = createReadStream(basePath, hashString, fileName);
+	readStream.on("error", err=>{
+		cb ? cb(err, null): null;
+	})
     if (!readStream) return null;
 
-    return byline.createStream(readStream).pipe(MyTransform);
-
+	if(cb){
+        cb(null, byline.createStream(readStream).pipe(MyTransform));
+    } else {
+        return byline.createStream(readStream).pipe(MyTransform);
+    }
 }
 
 function DeCodeData(basePath, hashString, fileName, callback) {

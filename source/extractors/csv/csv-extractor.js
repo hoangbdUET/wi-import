@@ -24,21 +24,26 @@ function extractFromCSV(inputURL, importData) {
     return new Promise((resolve, reject) => {
         // let firstLine = firstline(inputURL);
         let rl = new readline(inputURL);
-        let fieldsName;
+        let fieldsName = importData.titleFields;
         let filePathes = new Object();
         let BUFFERS = new Object();
         let count = 0;
         let datasets = {};
         let wellInfo = importData.well;
         let logDataIndex = 0;
+        let units = importData.units;
 
         // firstLine.then(function (data) {
         // BUFFERS = new Object();
         // count = 0;
         rl.on('line', function (line) {
+            if (count < 10) {
+                console.log(line);
+
+            }
             line = line.trim();
             if (count == 0) {
-                fieldsName = line.split(',');
+                // fieldsName = line.split(',');
                 fieldsName.forEach(function (fieldName) {
                     BUFFERS[fieldName] = {
                         count: 0,
@@ -47,7 +52,7 @@ function extractFromCSV(inputURL, importData) {
                 });
             } else if (count == 1) {
                 let dataset = {
-                    name: wellInfo.name + logDataIndex,
+                    name: wellInfo.dataset,
                     curves: [],
                     top: wellInfo.STRT.value,
                     bottom: wellInfo.STOP.value,
@@ -55,7 +60,7 @@ function extractFromCSV(inputURL, importData) {
                     params: []
                 }
                 datasets[dataset.name] = dataset;
-                let units = line.split(',');
+                // let units = line.split(',');
                 for (let i = 0; i < units.length; i++) {
                     let curve = {
                         name: fieldsName[i],

@@ -8,7 +8,7 @@ const detectCharacterEncoding = require('detect-character-encoding');
 
 function writeToCurveFile(buffer, curveFileName, index, value, defaultNull) {
     buffer.count += 1;
-    if (value == defaultNull) {
+    if (parseFloat(value) === parseFloat(defaultNull)) {
         buffer.data += index + " null" + "\n";
     }
     else {

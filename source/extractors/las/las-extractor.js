@@ -102,7 +102,7 @@ module.exports = async function (inputFile, importData) {
                 }
 
                 if (sectionName == parameterTitle || (lasVersion == 2 && sectionName == curveTitle)) {
-                    if(sectionName == parameterTitle && lasVersion == 3) logDataIndex++;
+                    if (sectionName == parameterTitle && lasVersion == 3) logDataIndex++;
                     if (datasets[wellInfo.name + logDataIndex]) return;
                     isFirstCurve = true;
                     let dataset = {
@@ -122,9 +122,9 @@ module.exports = async function (inputFile, importData) {
                 else if (new RegExp(definitionTitle).test(sectionName) || new RegExp(parameterTitle).test(sectionName)) {
                     isFirstCurve = true;
                     let datasetName = '';
-                    if(new RegExp(definitionTitle).test(sectionName)){
+                    if (new RegExp(definitionTitle).test(sectionName)) {
                         datasetName = sectionName.replace(definitionTitle, '');
-                    }else {
+                    } else {
                         datasetName = sectionName.replace('_' + parameterTitle, '');
                     }
                     // const datasetName = sectionName.substring(0, sectionName.lastIndexOf('_'));
@@ -147,7 +147,7 @@ module.exports = async function (inputFile, importData) {
                 console.log('section name: ' + sectionName)
                 if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
 
-                    if(sectionName == asciiTitle) currentDatasetName = wellInfo.name + logDataIndex;
+                    if (sectionName == asciiTitle) currentDatasetName = wellInfo.name + logDataIndex;
                     datasets[currentDatasetName].curves.forEach(curve => {
                         BUFFERS[curve.name] = {
                             count: 0,
@@ -188,38 +188,37 @@ module.exports = async function (inputFile, importData) {
                     }
                 } else if (sectionName == wellTitle) {
                     if (importData.well) return;
-
                     const mnem = line.substring(0, line.indexOf('.')).trim();
                     line = line.substring(line.indexOf('.'));
                     const data = line.substring(line.indexOf(' '), line.lastIndexOf(':')).trim();
                     const description = line.substring(line.lastIndexOf(':') + 1).trim();
-
-                    // if ((/WELL/).test(mnem) && !/UWI/.test(mnem)) {
-                    //     wellInfo.name = data ? data : inputFile.originalname;
-                    // }
-                    // else {
-                    //     wellInfo[mnem] = data;
-                    // }
+                    const unitSec = line.substring(line.indexOf('.') + 1);
+                    let unit = unitSec.substring(0, unitSec.indexOf(' ')).trim();
+                    if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));
                     if ((/WELL/).test(mnem) && data) {
                         wellInfo.name = data;
                     }
                     wellInfo[mnem] = {
                         value: data,
-                        description: description
+                        description: description,
+                        unit: unit
                     }
                 } else if (sectionName == parameterTitle || new RegExp(parameterTitle).test(sectionName)) {
                     if (importData.well) return;
-
                     const mnem = line.substring(0, line.indexOf('.')).trim();
                     line = line.substring(line.indexOf('.'));
+                    const paramsUnitSec = line.substring(line.indexOf('.') + 1);
+                    let paramUnit = paramsUnitSec.substring(0, paramsUnitSec.indexOf(' ')).trim();
+                    if (paramUnit.indexOf("00") != -1) paramUnit = paramUnit.substring(0, unit.indexOf("00"));
                     const data = line.substring(line.indexOf(' '), line.lastIndexOf(':')).trim();
                     const description = line.substring(line.lastIndexOf(':') + 1).trim();
                     if (sectionName == parameterTitle) {
-                        if(mnem == 'SET') datasets[wellInfo.name + logDataIndex].name = data;
+                        if (mnem == 'SET') datasets[wellInfo.name + logDataIndex].name = data;
                         datasets[wellInfo.name + logDataIndex].params.push({
                             mnem: mnem,
                             value: data,
-                            description: description
+                            description: description,
+                            unit: paramUnit
                         })
                     }
                     else {
@@ -273,12 +272,12 @@ module.exports = async function (inputFile, importData) {
                     fields = fields.concat(line.trim().split(delimitingChar));
                     if (fields.length > datasets[currentDatasetName].curves.length) {
                         if (datasets[currentDatasetName].curves) {
-                            if((sectionName == asciiTitle || /LOG/.test(sectionName)) && parseFloat(wellInfo.STEP.value) != 0) {
+                            if ((sectionName == asciiTitle || /LOG/.test(sectionName)) && parseFloat(wellInfo.STEP.value) != 0) {
                                 datasets[currentDatasetName].curves.forEach(function (curve, i) {
                                     writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i + 1], wellInfo.NULL.value);
                                 });
                                 count++;
-                            }else {
+                            } else {
                                 datasets[currentDatasetName].curves.forEach(function (curve, i) {
                                     writeToCurveFile(BUFFERS[curve.name], curve.path, fields[0], fields[i + 1], wellInfo.NULL.value);
                                 });
@@ -301,7 +300,7 @@ module.exports = async function (inputFile, importData) {
 
                 //reverse if step is negative
                 let step = 0;
-                if(wellInfo.STEP && parseFloat(wellInfo.STEP.value) < 0){
+                if (wellInfo.STEP && parseFloat(wellInfo.STEP.value) < 0) {
                     step = parseFloat(wellInfo.STEP.value);
                     wellInfo.STEP.value = (-step).toString();
                     const tmp = wellInfo.STRT.value;
@@ -315,7 +314,7 @@ module.exports = async function (inputFile, importData) {
                 for (var datasetName in datasets) {
                     if (!datasets.hasOwnProperty(datasetName)) continue;
                     let dataset = datasets[datasetName];
-                    if(step < 0){
+                    if (step < 0) {
                         dataset.step = (-step).toString();
                         dataset.top = wellInfo.STRT.value;
                         dataset.bottom = wellInfo.STOP.value;
@@ -323,7 +322,7 @@ module.exports = async function (inputFile, importData) {
                     wellInfo.datasets.push(dataset);
                     dataset.curves.forEach(curve => {
                         fs.appendFileSync(curve.path, BUFFERS[curve.name].data);
-                        if(step < 0) {
+                        if (step < 0) {
                             curve.step = (-step).toString();
                             curve.startDepth = wellInfo.STRT.value;
                             curve.stopDepth = wellInfo.STOP.value;

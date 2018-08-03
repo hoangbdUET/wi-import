@@ -253,6 +253,7 @@ module.exports = async function (inputFile, importData) {
 
                     let unit = line.substring(0, line.indexOf(' ')).trim();
                     if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));
+                    let curveDescription = line.substring(line.lastIndexOf(':') + 1).trim();
 
 
                     let curve = {
@@ -263,7 +264,8 @@ module.exports = async function (inputFile, importData) {
                         startDepth: datasets[currentDatasetName].top,
                         stopDepth: datasets[currentDatasetName].bottom,
                         step: datasets[currentDatasetName].step,
-                        path: ''
+                        path: '',
+                        description: curveDescription
                     }
                     datasets[currentDatasetName].curves.push(curve);
                 } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {

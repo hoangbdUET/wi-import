@@ -3,8 +3,8 @@ let readline = require('line-by-line');
 let hashDir = require('../hash-dir');
 let fs = require('fs');
 let config = require('../common-config');
-
-const detectCharacterEncoding = require('detect-character-encoding');
+let os = require('os');
+const detectCharacterEncoding = os.type() === "Windows_NT" ? null : require('detect-character-encoding');
 
 function writeToCurveFile(buffer, curveFileName, index, value, defaultNull) {
     buffer.count += 1;
@@ -25,8 +25,7 @@ function writeToCurveFile(buffer, curveFileName, index, value, defaultNull) {
 module.exports = async function (inputFile, importData) {
     return new Promise((resolve, reject) => {
         const fileBuffer = fs.readFileSync(inputFile.path);
-        const fileEncoding = detectCharacterEncoding(fileBuffer).encoding == 'ISO-8859-1' ? 'latin1' : 'utf8';
-        // const fileEncoding = 'utf8';
+        const fileEncoding = detectCharacterEncoding ? detectCharacterEncoding(fileBuffer).encoding == 'ISO-8859-1' ? 'latin1' : 'utf8' : 'utf8';
         let rl = new readline(inputFile.path, {encoding: fileEncoding, skipEmptyLines: true});
         let sectionName = "";
         let datasets = {};

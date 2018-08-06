@@ -316,10 +316,12 @@ module.exports = async function (inputFile, importData) {
                 for (var datasetName in datasets) {
                     if (!datasets.hasOwnProperty(datasetName)) continue;
                     let dataset = datasets[datasetName];
+                    dataset.unit = wellInfo['STRT'].unit;
                     if (step < 0) {
                         dataset.step = (-step).toString();
                         dataset.top = wellInfo.STRT.value;
                         dataset.bottom = wellInfo.STOP.value;
+                        dataset.unit = wellInfo['STRT'].unit;
                     }
                     wellInfo.datasets.push(dataset);
                     dataset.curves.forEach(curve => {

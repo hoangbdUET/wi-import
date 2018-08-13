@@ -54,7 +54,8 @@ module.exports = async function (inputFile, importData) {
         rl.on('line', function (line) {
             line = line.trim();
             line = line.replace(/\s+\s/g, " ");
-            if (/^#/.test(line) || lasFormatError.length > 0) {
+            if (line.length < 1 || /^#/.test(line) || lasFormatError.length > 0) {
+                //skip the line if it's empty or commented
                 return;
             }
             if (/^~/.test(line)) {
@@ -110,7 +111,7 @@ module.exports = async function (inputFile, importData) {
                         top: wellInfo.STRT.value,
                         bottom: wellInfo.STOP.value,
                         step: wellInfo.STEP.value,
-                        params: []
+                        params: [],
                     }
                     datasets[wellInfo.name + logDataIndex] = dataset;
                     // dataset[currentDatasetName].curves.forEach(curve=>{
@@ -134,7 +135,8 @@ module.exports = async function (inputFile, importData) {
                         top: wellInfo.STRT.value,
                         bottom: wellInfo.STOP.value,
                         step: wellInfo.STEP.value,
-                        params: []
+                        params: [],
+                        unit: ''
                     }
                     datasets[datasetName] = dataset;
                     // dataset[currentDatasetName].curves.forEach(curve=>{
@@ -230,6 +232,10 @@ module.exports = async function (inputFile, importData) {
                 } else if (sectionName == curveTitle || new RegExp(definitionTitle).test(sectionName)) {
                     if (isFirstCurve) {
                         isFirstCurve = false;
+                        line = line.substring(line.indexOf('.') + 1);
+                        let unit = line.substring(0, line.indexOf(' ')).trim();
+                        datasets[currentDatasetName].unit = unit;
+                        console.log(datasets[currentDatasetName], "====", unit);
                         return;
                     }
 
@@ -315,12 +321,12 @@ module.exports = async function (inputFile, importData) {
                 for (var datasetName in datasets) {
                     if (!datasets.hasOwnProperty(datasetName)) continue;
                     let dataset = datasets[datasetName];
-                    dataset.unit = wellInfo['STRT'].unit;
+                    dataset.unit = dataset.unit || wellInfo['STRT'].unit;
                     if (step < 0) {
                         dataset.step = (-step).toString();
                         dataset.top = wellInfo.STRT.value;
                         dataset.bottom = wellInfo.STOP.value;
-                        dataset.unit = wellInfo['STRT'].unit;
+                        dataset.unit = dataset.unit || wellInfo['STRT'].unit;
                     }
                     wellInfo.datasets.push(dataset);
                     dataset.curves.forEach(curve => {

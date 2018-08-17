@@ -49,7 +49,7 @@ module.exports = async function (inputFile, importData) {
         let lasVersion = 3;
         let delimitingChar = ' ';
         let lasFormatError = '';
-        let logDataIndex = 0;
+        let logDataIndex = '';
 
         rl.on('line', function (line) {
             line = line.trim();

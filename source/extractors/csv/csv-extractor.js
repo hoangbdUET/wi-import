@@ -16,7 +16,7 @@ function writeFromCsv(buffer, fileName, data, index, defaultNULL) {
     if (buffer.count >= 1000) {
         fs.appendFileSync(fileName, buffer.data);
         buffer.count = 0;
-        buffer.data = "";
+        buffer.data = '';
     }
 }
 
@@ -36,18 +36,14 @@ function extractFromCSV(inputURL, importData) {
         // firstLine.then(function (data) {
         // BUFFERS = new Object();
         // count = 0;
-        rl.on('line', function (line) {
-            if (count < 10) {
-                console.log(line);
-
-            }
+        rl.on('line', function(line) {
             line = line.trim();
             if (count == 0) {
                 // fieldsName = line.split(',');
-                fieldsName.forEach(function (fieldName) {
+                fieldsName.forEach(function(fieldName) {
                     BUFFERS[fieldName] = {
                         count: 0,
-                        data: ""
+                        data: '',
                     };
                 });
             } else if (count == 1) {
@@ -57,8 +53,8 @@ function extractFromCSV(inputURL, importData) {
                     top: wellInfo.STRT.value,
                     bottom: wellInfo.STOP.value,
                     step: wellInfo.STEP.value,
-                    params: []
-                }
+                    params: [],
+                };
                 datasets[dataset.name] = dataset;
                 // let units = line.split(',');
                 for (let i = 0; i < units.length; i++) {
@@ -70,29 +66,52 @@ function extractFromCSV(inputURL, importData) {
                         startDepth: wellInfo.STRT.value,
                         stopDepth: wellInfo.STOP.value,
                         step: wellInfo.STEP.value,
-                        path: ''
-                    }
-                    const hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + curve.name + curve.unit + curve.step;
-                    filePathes[curve.name] = hashDir.createPath(config.dataPath, hashstr, curve.name + '.txt');
-                    curve.path = filePathes[curve.name].replace(config.dataPath + '/', '');
-                    fs.writeFileSync(filePathes[curve.name], "");
+                        path: '',
+                    };
+                    const hashstr =
+                        importData.userInfo.username +
+                        wellInfo.name +
+                        curve.datasetname +
+                        curve.name +
+                        curve.unit +
+                        curve.step;
+                    filePathes[curve.name] = hashDir.createPath(
+                        config.dataPath,
+                        hashstr,
+                        curve.name + '.txt',
+                    );
+                    curve.path = filePathes[curve.name].replace(
+                        config.dataPath + '/',
+                        '',
+                    );
+                    fs.writeFileSync(filePathes[curve.name], '');
                     datasets[dataset.name].curves.push(curve);
                 }
             } else {
                 line = line.split(',');
-                fieldsName.forEach(function (fieldName, i) {
-                    writeFromCsv(BUFFERS[fieldName], filePathes[fieldName], line[i], count - 2, wellInfo.NULL.value);
+                fieldsName.forEach(function(fieldName, i) {
+                    writeFromCsv(
+                        BUFFERS[fieldName],
+                        filePathes[fieldName],
+                        line[i],
+                        count - 2,
+                        wellInfo.NULL.value,
+                    );
                 });
             }
             count++;
         });
 
-        rl.on('end', function () {
+        rl.on('end', function() {
             if (fieldsName) {
-                fieldsName.forEach(function (fieldName) {
-                    fs.appendFileSync(filePathes[fieldName], BUFFERS[fieldName].data, function (err) {
-                        reject('WRONG FORMAT');
-                    });
+                fieldsName.forEach(function(fieldName) {
+                    fs.appendFileSync(
+                        filePathes[fieldName],
+                        BUFFERS[fieldName].data,
+                        function(err) {
+                            reject('WRONG FORMAT');
+                        },
+                    );
                 });
             }
 
@@ -140,7 +159,7 @@ function extractFromCSV(inputURL, importData) {
         //     if (err) console.log(err);
         //     reject(err);
         // });
-    })
+    });
 }
 
 module.exports.extractFromCSV = extractFromCSV;

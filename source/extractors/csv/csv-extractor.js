@@ -31,7 +31,7 @@ function extractFromCSV(inputURL, importData) {
         let datasets = {};
         let wellInfo = importData.well;
         let logDataIndex = 0;
-        let units = importData.units;
+        let units = importData.units || [];
 
         // firstLine.then(function (data) {
         // BUFFERS = new Object();
@@ -57,10 +57,10 @@ function extractFromCSV(inputURL, importData) {
                 };
                 datasets[dataset.name] = dataset;
                 // let units = line.split(',');
-                for (let i = 0; i < units.length; i++) {
+                for (let i = 0; i < fieldsName.length; i++) {
                     let curve = {
                         name: fieldsName[i],
-                        unit: units[i],
+                        unit: units[i] || '',
                         datasetname: dataset.name,
                         wellname: wellInfo.name,
                         startDepth: wellInfo.STRT.value,

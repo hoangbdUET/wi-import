@@ -155,7 +155,11 @@ module.exports.deleteFolder = function (basePath, hashString) {
     return null;
 }
 
-module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment, cb) {
+module.exports.createJSONReadStream = function (basePath, hashString, fileName, beginFragment, endFragment, cb, options) {
+    let parseFunc = parseInt;
+    if (options.isCore) {
+        parseFunc = parseFloat;
+    }
     var MyTransform = new Transform({
         writableObjectMode: true,
         transform: function (chunk, encoding, callback) {
@@ -163,11 +167,11 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
             var tokens = chunk.toString().split(/\s+/);
             if (!this._started_) {
                 if (beginFragment) this.push(beginFragment);
-                this.push('[' + JSON.stringify({y: tokens[0], x: tokens[1]}));
+                this.push('[' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1])}));
                 this._started_ = true;
             }
             else {
-                this.push(',\n' + JSON.stringify({y: tokens[0], x: tokens[1]}));
+                this.push(',\n' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1])}));
             }
             callback();
         },

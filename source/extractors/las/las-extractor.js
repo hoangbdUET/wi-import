@@ -188,7 +188,7 @@ module.exports = async function (inputFile, importData) {
                     const unitSec = line.substring(line.indexOf('.') + 1);
                     let unit = unitSec.substring(0, unitSec.indexOf(' ')).trim();
                     if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));
-                    if ((/WELL/).test(mnem) && data) {
+                    if (mnem.localeCompare("WELL") == 0 && data) {
                         wellInfo.name = data;
                     }
                     wellInfo[mnem] = {

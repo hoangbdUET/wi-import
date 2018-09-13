@@ -19,7 +19,25 @@ function writeToCurveFile(buffer, curveFileName, index, value, defaultNull) {
         buffer.data = "";
     }
 }
-
+function customSplit(str, delimiter){
+    let words;
+    if(str.includes('"')){
+        str = str.replace(/"[^"]+"/g, function (match, idx, string){
+            let tmp = match.replace(/"/g, '');
+            return '"' + Buffer.from(tmp).toString('base64') + '"';
+        })
+        words = str.split(delimiter);
+        words = words.map(function(word){
+            if(word.includes('"')){
+                return Buffer.from(word.replace(/"/g, ''), 'base64').toString();
+            }
+            else return word;
+        })
+    }else {
+        words = str.split(delimiter);
+    }
+    return words;
+}
 
 module.exports = async function (inputFile, importData) {
     return new Promise((resolve, reject) => {
@@ -267,7 +285,8 @@ module.exports = async function (inputFile, importData) {
                 } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
                     // let separator = sectionName == asciiTitle ? ' ' : ',';
                     // const datasetName = sectionName == asciiTitle ? wellInfo.name : sectionName.substring(0, sectionName.indexOf(dataTitle));
-                    fields = fields.concat(line.trim().split(delimitingChar));
+                    //fields = fields.concat(line.trim().split(delimitingChar));
+                    fields = fields.concat(customSplit(line.trim(), delimitingChar));
                     if (fields.length > datasets[currentDatasetName].curves.length) {
                         if (datasets[currentDatasetName].curves) {
                             if ((sectionName == asciiTitle || /LOG/.test(sectionName)) && parseFloat(wellInfo.STEP.value) != 0) {

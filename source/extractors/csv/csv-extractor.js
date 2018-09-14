@@ -54,6 +54,7 @@ function extractFromCSV(inputURL, importData) {
                     bottom: wellInfo.STOP.value,
                     step: wellInfo.STEP.value,
                     params: [],
+                    unit: importData.unitDepth,
                 };
                 datasets[dataset.name] = dataset;
                 // let units = line.split(',');

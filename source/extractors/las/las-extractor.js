@@ -340,6 +340,7 @@ module.exports = async function (inputFile, importData) {
                         dataset.top = dataset.bottom;
                         dataset.bottom = tmp;
                     }
+                    updateWellDepthRange(wellInfo, dataset);
                     wellInfo.datasets.push(dataset);
                     dataset.curves.forEach(curve => {
                         fs.appendFileSync(curve.path, BUFFERS[curve.name].data);
@@ -384,4 +385,13 @@ async function reverseData(filePath) {
         return line;
     })
     fs.writeFileSync(filePath, data.join('\n'));
+}
+
+function updateWellDepthRange(well, dataset){
+    if(parseFloat(well.STRT.value) > parseFloat(dataset.top)){
+        well.STRT.value = dataset.top;
+    }
+    if(parseFloat(well.STOP.value) < parseFloat(dataset.bottom)){
+        well.STOP.value = dataset.bottom;
+    }
 }

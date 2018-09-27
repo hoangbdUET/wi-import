@@ -13,7 +13,7 @@ function writeToCurveFile(buffer, curveFileName, index, value, defaultNull, coun
     else {
         buffer.data += index + " " + value + "\n";
     }
-    if (count % 1000 == 0) {
+    if (count > 1 && count % 1000 == 0) {
         fs.appendFileSync(curveFileName, buffer.data);
         buffer.data = "";
     }
@@ -65,6 +65,7 @@ module.exports = async function (inputFile, importData) {
     let delimitingChar = ' ';
     let lasFormatError = '';
     let logDataIndex = '';
+    let lastDepth = 0;
 
     rl.on('line', function (line) {
         line = line.trim();
@@ -125,10 +126,11 @@ module.exports = async function (inputFile, importData) {
                     curves: [],
                     top: 0,
                     bottom: 0,
-                    step: wellInfo.STEP.value,
+                    step: 0,
                     params: [],
                     unit: 0,
-                    count: 0
+                    count: 0,
+                    isLogData: true
                 }
                 datasets[wellInfo.name + logDataIndex] = dataset;
                 currentDatasetName = wellInfo.name + logDataIndex;
@@ -148,10 +150,11 @@ module.exports = async function (inputFile, importData) {
                     curves: [],
                     top: 0,
                     bottom: 0,
-                    step: datasetName == "LOG"? wellInfo.STEP.value : 0,
+                    step:  0,
                     params: [],
                     unit: '',
-                    count: 0
+                    count: 0,
+                    isLogData: true
                 }
                 datasets[datasetName] = dataset;
                 currentDatasetName = datasetName;
@@ -278,7 +281,7 @@ module.exports = async function (inputFile, importData) {
                     wellname: wellInfo.name,
                     startDepth: 0,
                     stopDepth: 0,
-                    step: datasets[currentDatasetName].step,
+                    step: 0,
                     path: '',
                     description: curveDescription
                 }
@@ -286,24 +289,35 @@ module.exports = async function (inputFile, importData) {
             } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
 
                 fields = fields.concat(customSplit(line.trim(), delimitingChar));
-                if (fields.length > datasets[currentDatasetName].curves.length) {
-                    if (datasets[currentDatasetName].curves) {
-                        const count = datasets[currentDatasetName].count;
-                        if(count == 0){
-                            datasets[currentDatasetName].top = fields[0];
+                const currentDataset = datasets[currentDatasetName];
+                if (fields.length > currentDataset.curves.length) {
+                    const count = currentDataset.count;
+                    if(count == 0){
+                        if(parseFloat(wellInfo.STEP.value) == 0 || (sectionName != asciiTitle && /LOG/.test(sectionName))){
+                            currentDataset.step = 0;
+                            currentDataset.isLogData = false;
                         }
-                        if ((sectionName == asciiTitle || /LOG/.test(sectionName)) && parseFloat(wellInfo.STEP.value) != 0) {
-                            datasets[currentDatasetName].curves.forEach(function (curve, i) {
-                                writeToCurveFile(BUFFERS[curve.name], curve.path, count, fields[i + 1], wellInfo.NULL.value, count);
-                            });
-                        } else {
-                            datasets[currentDatasetName].curves.forEach(function (curve, i) {
-                                writeToCurveFile(BUFFERS[curve.name], curve.path, fields[0], fields[i + 1], wellInfo.NULL.value, count);
-                            });
-                        }
-                        datasets[currentDatasetName].bottom = fields[0];
-                        datasets[currentDatasetName].count++
+                        currentDataset.top = fields[0];
                     }
+                    if(count < 100 && count > 0){
+                        if(currentDataset.isLogData == true && (fields[0] - lastDepth) != wellInfo.STEP.value){
+                            currentDataset.step = 0;
+                            currentDataset.isLogData = false;
+                        }
+                    }
+                    if(count == 100 && currentDataset.isLogData == true){
+                        currentDataset.step = wellInfo.STEP.value;
+                        for(let curve of currentDataset.curves){
+                            replaceDepthWithIndex(BUFFERS[curve.name]);
+                        }
+                    }
+                    const index = currentDataset.step != 0 ? count : fields[0];
+                    currentDataset.curves.forEach(function (curve, i) {
+                        writeToCurveFile(BUFFERS[curve.name], curve.path, index, fields[i + 1], wellInfo.NULL.value, count);
+                    });
+                    currentDataset.bottom = fields[0];
+                    currentDataset.count++
+                    lastDepth = fields[0]; //save last depth
                     fields = [];
                 }
             }
@@ -335,7 +349,7 @@ module.exports = async function (inputFile, importData) {
                 if (!datasets.hasOwnProperty(datasetName)) continue;
                 let dataset = datasets[datasetName];
                 dataset.unit = dataset.unit || wellInfo['STRT'].unit;
-                if (step < 0) {
+                if (dataset.step < 0) {
                     dataset.step = (-step).toString();
                     const tmp = dataset.top;
                     dataset.top = dataset.bottom;
@@ -348,7 +362,7 @@ module.exports = async function (inputFile, importData) {
                 curve.step = dataset.step;
                 curve.startDepth = dataset.top;
                 curve.stopDepth = dataset.bottom;
-                if (step < 0) {
+                if (curve.step < 0) {
                     reverseData(curve.path);
                 }
                 curve.path = curve.path.replace(config.dataPath + '/', '');
@@ -395,4 +409,14 @@ function updateWellDepthRange(well, dataset){
     if(parseFloat(well.STOP.value) < parseFloat(dataset.bottom)){
         well.STOP.value = dataset.bottom;
     }
+}
+
+function replaceDepthWithIndex(buffer) {
+    let newData = "";
+    let rows = buffer.data.trim().split("\n");
+    for(let i in rows){
+        let data = rows[i].trim().split(" ");
+        newData += i + " " + data[1] + "\n";
+    }
+    buffer.data = newData;
 }

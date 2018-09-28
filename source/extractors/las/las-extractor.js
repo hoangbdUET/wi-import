@@ -293,14 +293,14 @@ module.exports = async function (inputFile, importData) {
                 if (fields.length > currentDataset.curves.length) {
                     const count = currentDataset.count;
                     if(count == 0){
-                        if(parseFloat(wellInfo.STEP.value) == 0 || (sectionName != asciiTitle && /LOG/.test(sectionName))){
+                        if(parseFloat(wellInfo.STEP.value) == 0 || (sectionName != asciiTitle && !/LOG/.test(sectionName))){
                             currentDataset.step = 0;
                             currentDataset.isLogData = false;
                         }
                         currentDataset.top = fields[0];
                     }
                     if(count < 100 && count > 0){
-                        if(currentDataset.isLogData == true && (fields[0] - lastDepth) != wellInfo.STEP.value){
+                        if(currentDataset.isLogData == true && !isFloatEqually(fields[0] - lastDepth, wellInfo.STEP.value)){
                             currentDataset.step = 0;
                             currentDataset.isLogData = false;
                         }
@@ -419,4 +419,12 @@ function replaceDepthWithIndex(buffer) {
         newData += i + " " + data[1] + "\n";
     }
     buffer.data = newData;
+}
+
+function isFloatEqually(float1, float2){
+    const epsilon = 10 ** -7;
+    let rFloat1 = Math.round(float1 * 10 ** 6)/10**6;
+    let rFloat2 = Math.round(float2 * 10 ** 6)/10**6;
+    var delta = Math.abs(rFloat1 - rFloat2);
+    return delta < epsilon;
 }

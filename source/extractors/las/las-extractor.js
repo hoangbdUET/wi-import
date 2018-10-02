@@ -129,8 +129,7 @@ module.exports = async function (inputFile, importData) {
                     step: 0,
                     params: [],
                     unit: 0,
-                    count: 0,
-                    isLogData: true
+                    count: 0
                 }
                 datasets[wellInfo.name + logDataIndex] = dataset;
                 currentDatasetName = wellInfo.name + logDataIndex;
@@ -153,8 +152,7 @@ module.exports = async function (inputFile, importData) {
                     step:  0,
                     params: [],
                     unit: '',
-                    count: 0,
-                    isLogData: true
+                    count: 0
                 }
                 datasets[datasetName] = dataset;
                 currentDatasetName = datasetName;
@@ -293,27 +291,16 @@ module.exports = async function (inputFile, importData) {
                 if (fields.length > currentDataset.curves.length) {
                     const count = currentDataset.count;
                     if(count == 0){
-                        if(parseFloat(wellInfo.STEP.value) == 0 || (sectionName != asciiTitle && !/LOG/.test(sectionName))){
-                            currentDataset.step = 0;
-                            currentDataset.isLogData = false;
-                        }
                         currentDataset.top = fields[0];
-                    }
-                    if(count < 100 && count > 0){
-                        if(currentDataset.isLogData == true && !isFloatEqually(fields[0] - lastDepth, wellInfo.STEP.value)){
+                    } else if (count == 1){
+                        currentDataset.step = fields[0] - lastDepth;
+                    } else {
+                        if(currentDataset.step != 0 && !isFloatEqually(fields[0] - lastDepth, currentDataset.step)){
                             currentDataset.step = 0;
-                            currentDataset.isLogData = false;
                         }
                     }
-                    if(count == 100 && currentDataset.isLogData == true){
-                        currentDataset.step = wellInfo.STEP.value;
-                        for(let curve of currentDataset.curves){
-                            replaceDepthWithIndex(BUFFERS[curve.name]);
-                        }
-                    }
-                    const index = currentDataset.step != 0 ? count : fields[0];
                     currentDataset.curves.forEach(function (curve, i) {
-                        writeToCurveFile(BUFFERS[curve.name], curve.path, index, fields[i + 1], wellInfo.NULL.value, count);
+                        writeToCurveFile(BUFFERS[curve.name], curve.path, fields[0], fields[i + 1], wellInfo.NULL.value, count);
                     });
                     currentDataset.bottom = fields[0];
                     currentDataset.count++
@@ -348,6 +335,7 @@ module.exports = async function (inputFile, importData) {
             for (var datasetName in datasets) {
                 if (!datasets.hasOwnProperty(datasetName)) continue;
                 let dataset = datasets[datasetName];
+                const datasetStep = dataset.step;
                 dataset.unit = dataset.unit || wellInfo['STRT'].unit;
                 if (dataset.step < 0) {
                     dataset.step = (-step).toString();
@@ -362,11 +350,11 @@ module.exports = async function (inputFile, importData) {
                 curve.step = dataset.step;
                 curve.startDepth = dataset.top;
                 curve.stopDepth = dataset.bottom;
-                if (curve.step < 0) {
+                if (datasetStep < 0) {
                     reverseData(curve.path);
                 }
                 curve.path = curve.path.replace(config.dataPath + '/', '');
-            })
+            });
             }
 
             output.push(wellInfo);
@@ -409,16 +397,6 @@ function updateWellDepthRange(well, dataset){
     if(parseFloat(well.STOP.value) < parseFloat(dataset.bottom)){
         well.STOP.value = dataset.bottom;
     }
-}
-
-function replaceDepthWithIndex(buffer) {
-    let newData = "";
-    let rows = buffer.data.trim().split("\n");
-    for(let i in rows){
-        let data = rows[i].trim().split(" ");
-        newData += i + " " + data[1] + "\n";
-    }
-    buffer.data = newData;
 }
 
 function isFloatEqually(float1, float2){

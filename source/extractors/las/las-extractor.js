@@ -6,17 +6,15 @@ let config = require('../common-config');
 let os = require('os');
 const detectCharacterEncoding = os.type() === "Windows_NT" ? null : require('detect-character-encoding');
 
-function writeToCurveFile(buffer, curveFileName, index, value, defaultNull, count) {
+function writeToCurveFile(buffer, index, value, defaultNull) {
+    let data = "";
     if (parseFloat(value) === parseFloat(defaultNull)) {
-        buffer.data += index + " null" + "\n";
+        data += index + " null" + "\n";
     }
     else {
-        buffer.data += index + " " + value + "\n";
+        data += index + " " + value + "\n";
     }
-    if (count > 1 && count % 1000 == 0) {
-        fs.appendFileSync(curveFileName, buffer.data);
-        buffer.data = "";
-    }
+    buffer.writeStream.write(data);
 }
 function customSplit(str, delimiter){
     let words;
@@ -163,13 +161,13 @@ module.exports = async function (inputFile, importData) {
 
                 if (sectionName == asciiTitle) currentDatasetName = wellInfo.name + logDataIndex;
                 datasets[currentDatasetName].curves.forEach(curve => {
-                    BUFFERS[curve.name] = {
-                        data:""
-                    };
-                const hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + curve.name + curve.unit + curve.step;
+                    const hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + curve.name + curve.unit + curve.step;
                 filePaths[curve.name] = hashDir.createPath(config.dataPath, hashstr, curve.name + '.txt');
                 fs.writeFileSync(filePaths[curve.name], "");
                 curve.path = filePaths[curve.name];
+                BUFFERS[curve.name] = {
+                    writeStream: fs.createWriteStream(filePaths[curve.name])
+                };
             })
             }
         }
@@ -300,7 +298,7 @@ module.exports = async function (inputFile, importData) {
                         }
                     }
                     currentDataset.curves.forEach(function (curve, i) {
-                        writeToCurveFile(BUFFERS[curve.name], curve.path, fields[0], fields[i + 1], wellInfo.NULL.value, count);
+                        writeToCurveFile(BUFFERS[curve.name], fields[0], fields[i + 1], wellInfo.NULL.value);
                     });
                     currentDataset.bottom = fields[0];
                     currentDataset.count++
@@ -346,7 +344,7 @@ module.exports = async function (inputFile, importData) {
                 updateWellDepthRange(wellInfo, dataset);
                 wellInfo.datasets.push(dataset);
                 dataset.curves.forEach(curve => {
-                    fs.appendFileSync(curve.path, BUFFERS[curve.name].data);
+                    BUFFERS[curve.name].writeStream.end();
                 curve.step = dataset.step;
                 curve.startDepth = dataset.top;
                 curve.stopDepth = dataset.bottom;

@@ -389,6 +389,8 @@ async function reverseData(filePath) {
 }
 
 function updateWellDepthRange(well, dataset){
+    if(dataset.top == 0 && dataset.bottom == 0)
+        return 0;
     if(parseFloat(well.STRT.value) > parseFloat(dataset.top)){
         well.STRT.value = dataset.top;
     }

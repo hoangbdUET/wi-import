@@ -291,7 +291,12 @@ module.exports = async function (inputFile, importData) {
                     if(count == 0){
                         currentDataset.top = fields[0];
                     } else if (count == 1){
-                        currentDataset.step = fields[0] - lastDepth;
+                        if(lasVersion == 2 && wellInfo.STEP.value == 0){
+                            currentDataset.step = 0;
+                        }
+                        else {
+                            currentDataset.step = fields[0] - lastDepth;
+                        }
                     } else {
                         if(currentDataset.step != 0 && !isFloatEqually(fields[0] - lastDepth, currentDataset.step)){
                             currentDataset.step = 0;

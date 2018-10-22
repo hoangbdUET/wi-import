@@ -43,7 +43,7 @@ function extractFromCSV(inputURL, importData) {
                 fieldsName.forEach(function(fieldName) {
                     BUFFERS[fieldName] = {
                         count: 0,
-                        data: '',
+                        data: ''
                     };
                 });
             } else if (count == 1) {
@@ -54,7 +54,7 @@ function extractFromCSV(inputURL, importData) {
                     bottom: wellInfo.STOP.value,
                     step: wellInfo.STEP.value,
                     params: [],
-                    unit: importData.unitDepth,
+                    unit: importData.unitDepth
                 };
                 datasets[dataset.name] = dataset;
                 // let units = line.split(',');
@@ -67,7 +67,7 @@ function extractFromCSV(inputURL, importData) {
                         startDepth: wellInfo.STRT.value,
                         stopDepth: wellInfo.STOP.value,
                         step: wellInfo.STEP.value,
-                        path: '',
+                        path: ''
                     };
                     const hashstr =
                         importData.userInfo.username +
@@ -79,31 +79,43 @@ function extractFromCSV(inputURL, importData) {
                     filePathes[curve.name] = hashDir.createPath(
                         config.dataPath,
                         hashstr,
-                        curve.name + '.txt',
+                        curve.name + '.txt'
                     );
-                    curve.path = filePathes[curve.name].replace(
-                        config.dataPath + '/',
-                        '',
-                    );
+                    curve.path = filePathes[curve.name];
+                    // .replace(
+                    // config.dataPath + '/',
+                    // '',
+                    // );
                     fs.writeFileSync(filePathes[curve.name], '');
                     datasets[dataset.name].curves.push(curve);
                 }
             } else {
                 line = line.split(',');
                 fieldsName.forEach(function(fieldName, i) {
-                    writeFromCsv(
-                        BUFFERS[fieldName],
-                        filePathes[fieldName],
-                        line[i],
-                        count - 2,
-                        wellInfo.NULL.value,
-                    );
+                    if (importData.coreData) {
+                        writeFromCsv(
+                            BUFFERS[fieldName],
+                            filePathes[fieldName],
+                            line[i + 1],
+                            line[0],
+                            wellInfo.NULL.value
+                        );
+                    } else {
+                        writeFromCsv(
+                            BUFFERS[fieldName],
+                            filePathes[fieldName],
+                            line[i + 1],
+                            count - 2,
+                            wellInfo.NULL.value
+                        );
+                    }
                 });
             }
             count++;
         });
 
         rl.on('end', function() {
+            console.log(filePathes);
             if (fieldsName) {
                 fieldsName.forEach(function(fieldName) {
                     fs.appendFileSync(
@@ -111,7 +123,7 @@ function extractFromCSV(inputURL, importData) {
                         BUFFERS[fieldName].data,
                         function(err) {
                             reject('WRONG FORMAT');
-                        },
+                        }
                     );
                 });
             }

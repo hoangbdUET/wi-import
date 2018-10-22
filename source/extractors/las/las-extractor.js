@@ -299,7 +299,7 @@ module.exports = async function (inputFile, importData) {
                                 currentDataset.step = 0;
                             }
                             else {
-                                currentDataset.step = fields[0] - lastDepth;
+                                currentDataset.step = (fields[0] - lastDepth).toFixed(4);
                             }
                         } else {
                             if (currentDataset.step != 0 && !isFloatEqually(fields[0] - lastDepth, currentDataset.step)) {

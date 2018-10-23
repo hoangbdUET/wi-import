@@ -81,11 +81,10 @@ function extractFromCSV(inputURL, importData) {
                         hashstr,
                         curve.name + '.txt'
                     );
-                    curve.path = filePathes[curve.name];
-                    // .replace(
-                    // config.dataPath + '/',
-                    // '',
-                    // );
+                    curve.path = filePathes[curve.name].replace(
+                        config.dataPath + '/',
+                        ''
+                    );
                     fs.writeFileSync(filePathes[curve.name], '');
                     datasets[dataset.name].curves.push(curve);
                 }

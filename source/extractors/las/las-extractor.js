@@ -244,8 +244,12 @@ module.exports = async function (inputFile, importData) {
                     if (isFirstCurve) {
                         isFirstCurve = false;
                         line = line.substring(line.indexOf('.') + 1);
-                        let unit = line.substring(0, line.indexOf(' ')).trim();
-                        datasets[currentDatasetName].unit = unit;
+                        const unit = line.substring(0, line.indexOf(' ')).trim();
+                        if(!unit || unit == ""){
+                            datasets[currentDatasetName].unit = "m";
+                        } else {
+                            datasets[currentDatasetName].unit = unit;
+                        }
                         return;
                     }
 

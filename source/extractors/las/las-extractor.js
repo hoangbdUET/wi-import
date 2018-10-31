@@ -245,11 +245,7 @@ module.exports = async function (inputFile, importData) {
                         isFirstCurve = false;
                         line = line.substring(line.indexOf('.') + 1);
                         const unit = line.substring(0, line.indexOf(' ')).trim();
-                        if(!unit || unit == ""){
-                            datasets[currentDatasetName].unit = "m";
-                        } else {
-                            datasets[currentDatasetName].unit = unit;
-                        }
+                        datasets[currentDatasetName].unit = unit;
                         return;
                     }
 

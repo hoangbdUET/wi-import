@@ -67,8 +67,10 @@ module.exports = async function (inputFile, importData) {
 
     rl.on('line', function (line) {
         try {
-            line = line.trim();
-            line = line.replace(/\s+\s/g, " ");
+            line = line.trim().replace(/\s+\s/g, " ");
+            if(delimitingChar != "\t"){
+                line = line.replace(/\t/g, " ");
+            }
             if (line.length < 1 || /^#/.test(line) || lasFormatError.length > 0) {
                 //skip the line if it's empty or commented
                 return;

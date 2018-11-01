@@ -129,6 +129,7 @@ function extractFromCSV(inputURL, importData) {
 
             let output = [];
             wellInfo.datasets = [];
+			delete wellInfo.dataset;
             for (var datasetName in datasets) {
                 let dataset = datasets[datasetName];
                 wellInfo.datasets.push(dataset);

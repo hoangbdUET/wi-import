@@ -348,7 +348,7 @@ module.exports = async function (inputFile, importData) {
                 const datasetStep = dataset.step;
                 dataset.unit = dataset.unit || wellInfo['STRT'].unit;
                 if (dataset.step < 0) {
-                    dataset.step = (-step).toString();
+                    dataset.step = (-datasetStep).toString();
                     const tmp = dataset.top;
                     dataset.top = dataset.bottom;
                     dataset.bottom = tmp;
@@ -394,10 +394,6 @@ function deleteFile(inputURL) {
 async function reverseData(filePath) {
     let data = fs.readFileSync(filePath, 'utf8').trim().split('\n');
     data.reverse();
-    data = data.map(function (line, index) {
-        line = index.toString() + ' ' + line.trim().split(' ').pop();
-        return line;
-    })
     fs.writeFileSync(filePath, data.join('\n'));
 }
 

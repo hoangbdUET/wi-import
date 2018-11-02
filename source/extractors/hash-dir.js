@@ -167,11 +167,11 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
             var tokens = chunk.toString().split(/\s+/);
             if (!this._started_) {
                 if (beginFragment) this.push(beginFragment);
-                this.push('[' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1])}));
+                this.push('[' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1]) * options.rate}));
                 this._started_ = true;
             }
             else {
-                this.push(',\n' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1])}));
+                this.push(',\n' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1]) * options.rate}));
             }
             callback();
         },

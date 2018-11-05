@@ -64,6 +64,7 @@ module.exports = async function (inputFile, importData) {
     let lasFormatError = '';
     let logDataIndex = '';
     let lastDepth = 0;
+    let wrapMode = false;
 
     rl.on('line', function (line) {
         try {
@@ -182,11 +183,11 @@ module.exports = async function (inputFile, importData) {
                 }
 
                 if (/VERSION/.test(sectionName)) {
+                    const dotPosition = line.indexOf('.');
+                    const colon = line.indexOf(':');
+                    const valueStr = line.substring(dotPosition + 1, colon).trim();
                     if (/VERS/.test(line)) {
-                        const dotPosition = line.indexOf('.');
-                        const colon = line.indexOf(':');
-                        const versionString = line.substring(dotPosition + 1, colon);
-                        /2/.test(versionString) ? lasVersion = 2 : lasVersion = 3;
+                        /2/.test(valueStr) ? lasVersion = 2 : lasVersion = 3;
                         if (lasVersion == 2) {
                             wellTitle = 'W';
                             curveTitle = 'C';
@@ -195,10 +196,13 @@ module.exports = async function (inputFile, importData) {
                         }
                         console.log('LAS VERSION: ' + lasVersion)
                     } else if (/DLM/.test(line)) {
-                        const dotPosition = line.indexOf('.');
-                        const colon = line.indexOf(':');
-                        const dlmString = line.substring(dotPosition + 1, colon).trim();
-                        delimitingChar = dlmString == 'COMMA' ? ',' : ' ';
+                        delimitingChar = valueStr == 'COMMA' ? ',' : ' ';
+                    } else if(/WRAP/.test(line)){
+                        if(lasVersion == 2 && valueStr == 'YES'){
+                            wrapMode = true;
+                        } else {
+                            wrapMode = false;
+                        }
                     }
                 } else if (sectionName == wellTitle) {
                     if (importData.well) return;
@@ -289,9 +293,13 @@ module.exports = async function (inputFile, importData) {
                     }
                     datasets[currentDatasetName].curves.push(curve);
                 } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
-
-                    fields = fields.concat(customSplit(line.trim(), delimitingChar));
                     const currentDataset = datasets[currentDatasetName];
+                    fields = fields.concat(customSplit(line.trim(), delimitingChar));
+                    // stop parsing if this file is not in wrap mode and do not have enough data for every curves on each line
+                    if(!wrapMode && fields.length <= currentDataset.curves.length){
+                        lasFormatError = "This file do node have enough data for every curves";
+                        rl.close();
+                    }
                     if (fields.length > currentDataset.curves.length) {
                         const count = currentDataset.count;
                         if (count == 0) {
@@ -328,8 +336,19 @@ module.exports = async function (inputFile, importData) {
     rl.on('end', function () {
         try {
             deleteFile(inputFile.path);
-            if (lasFormatError && lasFormatError.length > 0) return reject(lasFormatError);
-            if (lasCheck != 2) return reject('THIS IS NOT LAS FILE, MISSING DATA SECTION');
+            if (lasCheck != 2) lasFormatError = 'THIS IS NOT LAS FILE, MISSING DATA SECTION';
+            if (lasFormatError && lasFormatError.length > 0) {
+                for(var datasetName in datasets){
+                    const dataset = datasets[datasetName];
+                    dataset.curves.forEach(curve => {
+                        if(BUFFERS[curve.name] && BUFFERS[curve.name].writeStream) {
+                        BUFFERS[curve.name].writeStream.end();
+                        fs.unlinkSync(curve.path);
+                    }
+                })
+                }
+                return reject(lasFormatError);
+            }
 
             //reverse if step is negative
             let step = 0;
@@ -340,7 +359,6 @@ module.exports = async function (inputFile, importData) {
                 wellInfo.STRT.value = wellInfo.STOP.value;
                 wellInfo.STOP.value = tmp;
             }
-
 
             let output = [];
             wellInfo.datasets = [];

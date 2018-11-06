@@ -300,7 +300,12 @@ module.exports = async function (inputFile, importData) {
                         lasFormatError = "This file do node have enough data for every curves";
                         rl.close();
                     }
-                    if (fields.length > currentDataset.curves.length) {
+                    // stop parsing if number of curves less than number of data columns
+                    if(fields.length  > currentDataset.curves.length + 1){
+                        lasFormatError = "number of curves less than number of data columns";
+                        rl.close();
+                    }
+                    if (fields.length == currentDataset.curves.length + 1) {
                         const count = currentDataset.count;
                         if (count == 0) {
                             currentDataset.top = fields[0];

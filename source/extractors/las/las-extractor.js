@@ -93,7 +93,7 @@ module.exports = async function (inputFile, importData) {
                     sectionName = line.substring(line.indexOf('~') + 1);
                 }
 
-                if (/VERSION/.test(sectionName)) {
+                if (/VERSION/.test(sectionName) || sectionName == "V") {
                     lasCheck++;
                 }
                 if (sectionName == wellTitle) {
@@ -182,7 +182,7 @@ module.exports = async function (inputFile, importData) {
                     return rl.close();
                 }
 
-                if (/VERSION/.test(sectionName)) {
+                if (/VERSION/.test(sectionName) || sectionName == "V") {
                     const dotPosition = line.indexOf('.');
                     const colon = line.indexOf(':');
                     const valueStr = line.substring(dotPosition + 1, colon).trim();

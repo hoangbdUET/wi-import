@@ -163,16 +163,27 @@ module.exports.createJSONReadStream = function (basePath, hashString, fileName, 
     var MyTransform = new Transform({
         writableObjectMode: true,
         transform: function (chunk, encoding, callback) {
+        	chunk = chunk.toString();
             //var tokens = chunk.toString().split(" ");
-            var tokens = chunk.toString().split(/\s+/);
-            if (!this._started_) {
-                if (beginFragment) this.push(beginFragment);
-                this.push('[' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1]) * options.rate}));
-                this._started_ = true;
-            }
-            else {
-                this.push(',\n' + JSON.stringify({y: parseFunc(tokens[0]), x: parseFloat(tokens[1]) * options.rate}));
-            }
+            // var tokens = chunk.toString().split(/\s+/);
+            let depthToken = chunk.substr(0, chunk.indexOf(' '));
+            let valueToken = chunk.substr(chunk.indexOf(' ')+1);
+            // if (!this._started_) {
+            //     if (beginFragment) this.push(beginFragment);
+            //     this.push('[' + JSON.stringify({y: parseFunc(tokens[0]), x: !parseFloat(tokens[1]) ? tokens[1] : parseFloat(tokens[1]) * options.rate}));
+            //     this._started_ = true;
+            // }
+            // else {
+            //     this.push(',\n' + JSON.stringify({y: parseFunc(tokens[0]), x: !parseFloat(tokens[1]) ? tokens[1] : parseFloat(tokens[1]) * options.rate}));
+            // }
+	        if (!this._started_) {
+		        if (beginFragment) this.push(beginFragment);
+		        this.push('[' + JSON.stringify({y: parseFunc(depthToken), x: !parseFloat(valueToken) ? valueToken : parseFloat(valueToken) * options.rate}));
+		        this._started_ = true;
+	        }
+	        else {
+		        this.push(',\n' + JSON.stringify({y: parseFunc(depthToken), x: !parseFloat(valueToken) ? valueToken : parseFloat(valueToken) * options.rate}));
+	        }
             callback();
         },
         flush: function (callback) {

@@ -26,7 +26,7 @@ function customSplit(str, delimiter){
         words = str.split(delimiter);
         words = words.map(function(word){
             if(word.includes('"')){
-                return Buffer.from(word.replace(/"/g, ''), 'base64').toString();
+                return '"' + Buffer.from(word.replace(/"/g, ''), 'base64').toString() + '"';
             }
             else return word;
         })

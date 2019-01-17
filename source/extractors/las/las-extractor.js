@@ -289,7 +289,8 @@ module.exports = async function (inputFile, importData) {
                         stopDepth: 0,
                         step: 0,
                         path: '',
-                        description: curveDescription
+                        description: curveDescription,
+                        type: "NUMBER"
                     }
                     datasets[currentDatasetName].curves.push(curve);
                 } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
@@ -322,6 +323,9 @@ module.exports = async function (inputFile, importData) {
                             }
                         }
                         currentDataset.curves.forEach(function (curve, i) {
+                            if(curve.type != "TEXT" && fields[i+1].includes('"')){
+                                curve.type = "TEXT";
+                            }
                             writeToCurveFile(BUFFERS[curve.name], fields[0], fields[i + 1], wellInfo.NULL.value);
                         });
                         currentDataset.bottom = fields[0];

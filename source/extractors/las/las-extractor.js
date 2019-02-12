@@ -275,10 +275,28 @@ module.exports = async function (inputFile, importData) {
                     }
                     line = line.substring(line.indexOf('.') + 1);
 
-                    let unit = line.substring(0, line.indexOf(' ')).trim();
-                    if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));
-                    let curveDescription = line.substring(line.lastIndexOf(':') + 1).trim();
+                    const idx_first_space = line.indexOf(' ');
+                    const idx_last_colon = line.lastIndexOf(':');
+                    const idx_left_brace = line.lastIndexOf('{');
+                    const idx_right_brace = line.lastIndexOf('}');
+                    const idx_bar = line.lastIndexOf('|');
+                    let idx_end_description = line.length;
+                    if(idx_bar > 0){
+                        idx_end_description = idx_bar;
+                    }
+                    if(idx_left_brace > 0){
+                        idx_end_description = idx_left_brace;
+                    }
 
+                    let _format = 'F';
+
+                    let unit = line.substring(0, idx_first_space).trim();
+                    if (unit.indexOf("00") != -1) unit = unit.substring(0, unit.indexOf("00"));
+
+                    const curveDescription = line.substring(idx_last_colon + 1, idx_end_description).trim();
+                    if(idx_left_brace > 0 && idx_right_brace > 0){
+                        _format = line.substring(idx_left_brace + 1, idx_right_brace).trim()[0];
+                    }
 
                     let curve = {
                         name: curveName,
@@ -290,7 +308,7 @@ module.exports = async function (inputFile, importData) {
                         step: 0,
                         path: '',
                         description: curveDescription,
-                        type: "NUMBER"
+                        type: _format == 'S' || _format == 's' ? 'TEXT' : 'NUMBER'
                     }
                     datasets[currentDatasetName].curves.push(curve);
                 } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {

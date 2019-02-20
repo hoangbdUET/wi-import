@@ -113,6 +113,14 @@ function extractFromCSV(inputURL, importData) {
         // line = line.split(',');
         line = customSplit(line, ',');
         fieldsName.forEach(function(fieldName, i) {
+          if (!datasets[wellInfo.dataset].curves[i].type) {
+            let _format = 'NUMBER';
+            console.log();
+            if (line[i + 1].indexOf('"') >= 0) {
+              _format = 'TEXT';
+            }
+            datasets[wellInfo.dataset].curves[i].type = _format;
+          }
           if (importData.coreData) {
             writeFromCsv(
               BUFFERS[fieldName],

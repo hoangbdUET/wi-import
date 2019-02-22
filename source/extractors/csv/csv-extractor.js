@@ -113,12 +113,16 @@ function extractFromCSV(inputURL, importData) {
         // line = line.split(',');
         line = customSplit(line, ',');
         fieldsName.forEach(function(fieldName, i) {
+          if (count < 7) {
+            console.log(datasets[wellInfo.dataset].curves[i].type);
+						console.log(datasets[wellInfo.dataset].curves[i].type != 'TEXT')
+          }
           if (
-            !datasets[wellInfo.dataset].curves[i].type != 'TEXT' &&
+            datasets[wellInfo.dataset].curves[i].type != 'TEXT' &&
             parseFloat(line[i + 1]) != parseFloat(wellInfo.NULL.value)
           ) {
             let _format = 'NUMBER';
-            if (isNaN(line[i + 1])) {
+            if (isNaN(line[i+1])) {
               _format = 'TEXT';
             }
             datasets[wellInfo.dataset].curves[i].type = _format;

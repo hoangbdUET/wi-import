@@ -8,11 +8,19 @@ const detectCharacterEncoding = os.type() === "Windows_NT" ? null : require('det
 
 function writeToCurveFile(buffer, index, value, defaultNull) {
     let data = "";
+    if(buffer.count == 0){
+        data += index;
+    }
     if (parseFloat(value) === parseFloat(defaultNull)) {
-        data += index + " null" + "\n";
+        data += " null";
     }
     else {
-        data += index + " " + value + "\n";
+        data += " " + value;
+    }
+    buffer.count += 1;
+    if(buffer.count == buffer.curveDimension){
+        data += "\n";
+        buffer.count = 0;
     }
     buffer.writeStream.write(data);
 }
@@ -47,7 +55,6 @@ module.exports = async function (inputFile, importData) {
         filename: inputFile.originalname,
         name: inputFile.originalname.substring(0, inputFile.originalname.lastIndexOf('.'))
     };
-    let filePaths = new Object();
     let BUFFERS = new Object();
     let isFirstCurve = true;
     let fields = [];
@@ -162,17 +169,24 @@ module.exports = async function (inputFile, importData) {
 
                 console.log('section name: ' + sectionName)
                 if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
-
                     if (sectionName == asciiTitle) currentDatasetName = wellInfo.name + logDataIndex;
                     datasets[currentDatasetName].curves.forEach(curve => {
-                        const hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + curve.name + curve.unit + curve.step;
-                    filePaths[curve.name] = hashDir.createPath(config.dataPath, hashstr, curve.name + '.txt');
-                    fs.writeFileSync(filePaths[curve.name], "");
-                    curve.path = filePaths[curve.name];
-                    BUFFERS[curve.name] = {
-                        writeStream: fs.createWriteStream(filePaths[curve.name])
-                    };
-                })
+                        const _cName = curve.name.replace(/\[(.*?)\]/g, "");
+                        const _hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + _cName + curve.unit + curve.step;
+                        const _filePath = hashDir.createPath(config.dataPath, _hashstr, _cName + '.txt');
+                        curve.path = _filePath;
+                        if(!BUFFERS[_cName] || !BUFFERS[_cName].writeStream) {
+                            fs.writeFileSync(_filePath, "");
+                            BUFFERS[_cName] = {
+                                curveDimension: 1,
+                                writeStream: fs.createWriteStream(_filePath),
+                                count: 0
+                            };
+                        }
+                        else {
+                            BUFFERS[_cName].curveDimension += 1;
+                        }
+                    })
                 }
             }
             else {
@@ -344,7 +358,7 @@ module.exports = async function (inputFile, importData) {
                             if(curve.type != "TEXT" && fields[i+1].includes('"')){
                                 curve.type = "TEXT";
                             }
-                            writeToCurveFile(BUFFERS[curve.name], fields[0], fields[i + 1], wellInfo.NULL.value);
+                            writeToCurveFile(BUFFERS[curve.name.replace(/\[(.*?)\]/g, "")], fields[0], fields[i + 1], wellInfo.NULL.value);
                         });
                         currentDataset.bottom = fields[0];
                         currentDataset.count++
@@ -363,7 +377,10 @@ module.exports = async function (inputFile, importData) {
     rl.on('end', function () {
         try {
             deleteFile(inputFile.path);
-            if (lasCheck != 2) lasFormatError = 'THIS IS NOT LAS FILE, MISSING DATA SECTION';
+            if (lasCheck != 2) {
+                console.log('=> ' + lasFormatError)
+                lasFormatError = 'THIS IS NOT LAS FILE, MISSING DATA SECTION';
+            }
             if (lasFormatError && lasFormatError.length > 0) {
                 for(var datasetName in datasets){
                     const dataset = datasets[datasetName];
@@ -402,16 +419,26 @@ module.exports = async function (inputFile, importData) {
                 }
                 updateWellDepthRange(wellInfo, dataset);
                 wellInfo.datasets.push(dataset);
-                dataset.curves.forEach(curve => {
-                    BUFFERS[curve.name].writeStream.end();
-                curve.step = dataset.step;
-                curve.startDepth = dataset.top;
-                curve.stopDepth = dataset.bottom;
-                if (datasetStep < 0) {
-                    reverseData(curve.path);
+                const _curveNames = []
+                for(let i = dataset.curves.length - 1; i >= 0; i--){
+                    const curve = dataset.curves[i];
+                    curve.name = curve.name.replace(/\[(.*?)\]/g, "");
+                    if(!_curveNames.includes(curve.name)){
+                        _curveNames.push(curve.name);
+                        BUFFERS[curve.name].writeStream.end();
+                        curve.step = dataset.step;
+                        curve.startDepth = dataset.top;
+                        curve.stopDepth = dataset.bottom;
+                        curve.type = "ARRAY";
+                        if (datasetStep < 0) {
+                            reverseData(curve.path);
+                        }
+                        curve.path = curve.path.replace(config.dataPath + '/', '');
+                    }
+                    else{
+                        dataset.curves.splice(i, 1);
+                    }
                 }
-                curve.path = curve.path.replace(config.dataPath + '/', '');
-            });
             }
 
             output.push(wellInfo);

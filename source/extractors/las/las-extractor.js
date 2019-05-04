@@ -425,13 +425,13 @@ module.exports = async function (inputFile, importData) {
                     const curve = dataset.curves[i];
                     curve.name = curve.name.replace(/\[(.*?)\]/g, "");
                     curve.dimension = BUFFERS[curve.name].curveDimension;
+                    if(curve.dimension > 1) curve.type = "ARRAY";
                     if(!_curveNames.includes(curve.name)){
                         _curveNames.push(curve.name);
                         BUFFERS[curve.name].writeStream.end();
                         curve.step = dataset.step;
                         curve.startDepth = dataset.top;
                         curve.stopDepth = dataset.bottom;
-                        curve.type = "ARRAY";
                         if (datasetStep < 0) {
                             reverseData(curve.path);
                         }

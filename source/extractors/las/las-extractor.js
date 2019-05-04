@@ -161,7 +161,8 @@ module.exports = async function (inputFile, importData) {
                         step: 0,
                         params: [],
                         unit: '',
-                        count: 0
+                        count: 0,
+                        dimension: 1
                     }
                     datasets[datasetName] = dataset;
                     currentDatasetName = datasetName;
@@ -423,6 +424,7 @@ module.exports = async function (inputFile, importData) {
                 for(let i = dataset.curves.length - 1; i >= 0; i--){
                     const curve = dataset.curves[i];
                     curve.name = curve.name.replace(/\[(.*?)\]/g, "");
+                    curve.dimension = BUFFERS[curve.name.curveDimension];
                     if(!_curveNames.includes(curve.name)){
                         _curveNames.push(curve.name);
                         BUFFERS[curve.name].writeStream.end();

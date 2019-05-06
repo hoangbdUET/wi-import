@@ -12,7 +12,7 @@ function writeToCurveFile(buffer, index, value, defaultNull) {
         data += index;
     }
     if (parseFloat(value) === parseFloat(defaultNull)) {
-        data += " null";
+        data += " ";
     }
     else {
         data += " " + value;
@@ -55,7 +55,6 @@ module.exports = async function (inputFile, importData) {
         filename: inputFile.originalname,
         name: inputFile.originalname.substring(0, inputFile.originalname.lastIndexOf('.'))
     };
-    let BUFFERS = new Object();
     let isFirstCurve = true;
     let fields = [];
     let wellTitle = 'WELL';
@@ -138,7 +137,8 @@ module.exports = async function (inputFile, importData) {
                         step: 0,
                         params: [],
                         unit: 0,
-                        count: 0
+                        count: 0,
+                        buffers: {}
                     }
                     datasets[wellInfo.name + logDataIndex] = dataset;
                     currentDatasetName = wellInfo.name + logDataIndex;
@@ -162,7 +162,7 @@ module.exports = async function (inputFile, importData) {
                         params: [],
                         unit: '',
                         count: 0,
-                        dimension: 1
+                        buffers: {}
                     }
                     datasets[datasetName] = dataset;
                     currentDatasetName = datasetName;
@@ -170,24 +170,26 @@ module.exports = async function (inputFile, importData) {
 
                 console.log('section name: ' + sectionName)
                 if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
+
                     if (sectionName == asciiTitle) currentDatasetName = wellInfo.name + logDataIndex;
-                    datasets[currentDatasetName].curves.forEach(curve => {
+                    const _cDataset = datasets[currentDatasetName];
+                    _cDataset.curves.forEach(curve => {
                         const _cName = curve.name.replace(/\[(.*?)\]/g, "");
-                        const _hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + _cName + curve.unit + curve.step;
-                        const _filePath = hashDir.createPath(config.dataPath, _hashstr, _cName + '.txt');
-                        curve.path = _filePath;
-                        if(!BUFFERS[_cName] || !BUFFERS[_cName].writeStream) {
-                            fs.writeFileSync(_filePath, "");
-                            BUFFERS[_cName] = {
-                                curveDimension: 1,
-                                writeStream: fs.createWriteStream(_filePath),
-                                count: 0
-                            };
-                        }
-                        else {
-                            BUFFERS[_cName].curveDimension += 1;
-                        }
-                    })
+                    const _hashstr = importData.userInfo.username + wellInfo.name + curve.datasetname + _cName + curve.unit + curve.step;
+                    const _filePath = hashDir.createPath(config.dataPath, _hashstr, _cName + '.txt');
+                    curve.path = _filePath;
+                    if(!_cDataset.buffers[_cName] || !_cDataset.buffers[_cName].writeStream) {
+                        fs.writeFileSync(_filePath, "");
+                        _cDataset.buffers[_cName] = {
+                            curveDimension: 1,
+                            writeStream: fs.createWriteStream(_filePath),
+                            count: 0
+                        };
+                    }
+                    else {
+                        _cDataset.buffers[_cName].curveDimension += 1;
+                    }
+                })
                 }
             }
             else {
@@ -323,7 +325,8 @@ module.exports = async function (inputFile, importData) {
                         step: 0,
                         path: '',
                         description: curveDescription,
-                        type: _format == 'S' || _format == 's' ? 'TEXT' : 'NUMBER'
+                        type: _format == 'S' || _format == 's' ? 'TEXT' : 'NUMBER',
+                        dimension: 1
                     }
                     datasets[currentDatasetName].curves.push(curve);
                 } else if (sectionName == asciiTitle || new RegExp(dataTitle).test(sectionName)) {
@@ -359,7 +362,7 @@ module.exports = async function (inputFile, importData) {
                             if(curve.type != "TEXT" && fields[i+1].includes('"')){
                                 curve.type = "TEXT";
                             }
-                            writeToCurveFile(BUFFERS[curve.name.replace(/\[(.*?)\]/g, "")], fields[0], fields[i + 1], wellInfo.NULL.value);
+                            writeToCurveFile(currentDataset.buffers[curve.name.replace(/\[(.*?)\]/g, "")], fields[0], fields[i + 1], wellInfo.NULL.value);
                         });
                         currentDataset.bottom = fields[0];
                         currentDataset.count++
@@ -386,8 +389,8 @@ module.exports = async function (inputFile, importData) {
                 for(var datasetName in datasets){
                     const dataset = datasets[datasetName];
                     dataset.curves.forEach(curve => {
-                        if(BUFFERS[curve.name] && BUFFERS[curve.name].writeStream) {
-                        BUFFERS[curve.name].writeStream.end();
+                        if(dataset.buffers[curve.name] && dataset.buffers[curve.name].writeStream) {
+                        dataset.buffers[curve.name].writeStream.end();
                         fs.unlinkSync(curve.path);
                     }
                 })
@@ -424,11 +427,11 @@ module.exports = async function (inputFile, importData) {
                 for(let i = dataset.curves.length - 1; i >= 0; i--){
                     const curve = dataset.curves[i];
                     curve.name = curve.name.replace(/\[(.*?)\]/g, "");
-                    curve.dimension = BUFFERS[curve.name].curveDimension;
+                    curve.dimension = dataset.buffers[curve.name].curveDimension;
                     if(curve.dimension > 1) curve.type = "ARRAY";
                     if(!_curveNames.includes(curve.name)){
                         _curveNames.push(curve.name);
-                        BUFFERS[curve.name].writeStream.end();
+                        dataset.buffers[curve.name].writeStream.end();
                         curve.step = dataset.step;
                         curve.startDepth = dataset.top;
                         curve.stopDepth = dataset.bottom;

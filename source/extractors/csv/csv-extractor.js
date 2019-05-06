@@ -9,8 +9,9 @@ let config = require('../common-config');
 function writeFromCsv(buffer, fileName, value, index, defaultNull, type) {
     let data = "";
     if (!value || parseFloat(value) === parseFloat(defaultNull)) {
-        if (type == 'TEXT') data += index + " " + "" + "\n";
-        else data += index + " null" + "\n";
+		if (type == 'TEXT') {
+			data += index + " " + "" + "\n"
+		} else data += index + " null" + "\n";
     }
     else {
         data += index + " " + value + "\n";
@@ -106,15 +107,16 @@ function extractFromCSV(inputURL, importData) {
             } else {
                 line = customSplit(line, ',');
                 fieldsName.forEach(function (fieldName, i) {
-                    let _format = datasets[wellInfo.dataset].curves[i].type;
+                    let format = datasets[wellInfo.dataset].curves[i].type;
                     if (
-                        _format != 'TEXT' &&
+                        format != 'TEXT' &&
                         parseFloat(line[i + 1]) != parseFloat(wellInfo.NULL.value)
                     ) {
-                        if (isNaN(line[i + 1])) {
-                            _format = 'TEXT';
+						format = 'NUMBER';
+                        if (!line[i+1] || isNaN(line[i + 1])) {
+                            format = 'TEXT';
                         }
-                        datasets[wellInfo.dataset].curves[i].type = _format;
+                        datasets[wellInfo.dataset].curves[i].type = format;
                     }
                     if (importData.coreData) {
                         writeFromCsv(
@@ -123,7 +125,7 @@ function extractFromCSV(inputURL, importData) {
                             line[i + 1],
                             line[0],
                             wellInfo.NULL.value,
-                            _format
+                            format
                         );
                     } else {
                         writeFromCsv(
@@ -132,7 +134,7 @@ function extractFromCSV(inputURL, importData) {
                             line[i + 1],
                             count - 2,
                             wellInfo.NULL.value,
-                            _format
+                            format
                         );
                     }
                 });

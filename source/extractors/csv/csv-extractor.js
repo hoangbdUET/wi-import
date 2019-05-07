@@ -113,7 +113,7 @@ function extractFromCSV(inputURL, importData) {
                         parseFloat(line[i + 1]) != parseFloat(wellInfo.NULL.value)
                     ) {
 						format = 'NUMBER';
-                        if (!line[i+1] || isNaN(line[i + 1])) {
+                        if (line[i+1] && isNaN(line[i + 1])) {
                             format = 'TEXT';
                         }
                         datasets[wellInfo.dataset].curves[i].type = format;

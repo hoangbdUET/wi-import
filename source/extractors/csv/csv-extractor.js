@@ -7,16 +7,7 @@ let hashDir = require('../hash-dir');
 let config = require('../common-config');
 
 function writeFromCsv(buffer, fileName, value, index, defaultNull, type) {
-    let data = "";
-    if (!value || parseFloat(value) === parseFloat(defaultNull)) {
-		if (type == 'TEXT') {
-			data += index + " " + "" + "\n"
-		} else data += index + " null" + "\n";
-    }
-    else {
-        data += index + " " + value + "\n";
-    }
-    buffer.writeStream.write(data);
+	buffer.data.push({index: index, value: value});
 }
 
 function customSplit(str, delimiter) {
@@ -101,7 +92,8 @@ function extractFromCSV(inputURL, importData) {
                     fs.writeFileSync(filePathes[curve.name], '');
                     datasets[dataset.name].curves.push(curve);
                     BUFFERS[curve.name] = {
-                        writeStream: fs.createWriteStream(filePathes[curve.name])
+                        writeStream: fs.createWriteStream(filePathes[curve.name]),
+						data: []
                     };
                 }
             } else {
@@ -117,8 +109,10 @@ function extractFromCSV(inputURL, importData) {
                             format = 'TEXT';
                         }
                         datasets[wellInfo.dataset].curves[i].type = format;
+						BUFFERS[fieldName].type = format;
                     }
                     if (importData.coreData) {
+						let data = 
                         writeFromCsv(
                             BUFFERS[fieldName],
                             filePathes[fieldName],
@@ -145,6 +139,19 @@ function extractFromCSV(inputURL, importData) {
         rl.on('end', function () {
             if (fieldsName) {
                 fieldsName.forEach(function (fieldName) {
+					let data = "";
+					BUFFERS[fieldName].data.forEach(x => {
+						if (!x.value || parseFloat(x.value) === parseFloat(wellInfo.NULL.value)) {
+							if (BUFFERS[fieldName].type == "TEXT") {
+								data += x.index + " " + "" + "\n";
+							} else {
+								data += x.index + " null" + "\n";
+							}
+						} else {
+							data += x.index + " " + x.value + "\n";
+						}
+					})
+					BUFFERS[fieldName].writeStream.write(data);
                     BUFFERS[fieldName].writeStream.end();
                 });
             }

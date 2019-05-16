@@ -12,12 +12,7 @@ function writeToCurveFile(buffer, index, value, defaultNull) {
         data += index;
     }
     if (parseFloat(value) === parseFloat(defaultNull)) {
-        if(buffer.type == "TEXT"){
-            data += " \"\"";
-        }
-        else {
-            data += " null"
-        }
+        data += " null"
     }
     else {
         data += " " + value;
@@ -188,8 +183,7 @@ module.exports = async function (inputFile, importData) {
                         _cDataset.buffers[_cName] = {
                             curveDimension: 1,
                             writeStream: fs.createWriteStream(_filePath),
-                            count: 0,
-                            type: "NUMBER"
+                            count: 0
                         };
                     }
                     else {
@@ -319,9 +313,6 @@ module.exports = async function (inputFile, importData) {
                     const curveDescription = line.substring(idx_last_colon + 1, idx_end_description).trim();
                     if(idx_left_brace > 0 && idx_right_brace > 0){
                         _format = line.substring(idx_left_brace + 1, idx_right_brace).trim()[0];
-                        if(_format == 'S' || _format == 's'){
-                            datasets[currentDatasetName].buffers[curveName.replace(/\[(.*?)\]/g, "")].type = "TEXT";
-                        }
                     }
 
                     let curve = {
@@ -370,7 +361,6 @@ module.exports = async function (inputFile, importData) {
                         currentDataset.curves.forEach(function (curve, i) {
                             if(curve.type != "TEXT" && fields[i+1].includes('"')){
                                 curve.type = "TEXT";
-                                currentDataset.buffers[curve.name.replace(/\[(.*?)\]/g, "")].type = "TEXT";
                             }
                             writeToCurveFile(currentDataset.buffers[curve.name.replace(/\[(.*?)\]/g, "")], fields[0], fields[i + 1], wellInfo.NULL.value);
                         });

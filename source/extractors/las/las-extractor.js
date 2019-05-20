@@ -27,7 +27,7 @@ function writeToCurveFile(buffer, index, value, defaultNull) {
 function customSplit(str, delimiter){
     let words;
     if(str.includes('"')){
-        str = str.replace(/"[^"]+"/g, function (match, idx, string){
+        str = str.replace(/"(.*?)"/g, function (match, idx, string){
             let tmp = match.replace(/"/g, '');
             return '"' + Buffer.from(tmp).toString('base64') + '"';
         })

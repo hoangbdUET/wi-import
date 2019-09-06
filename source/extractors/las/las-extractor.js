@@ -346,6 +346,7 @@ module.exports = async function (inputFile, importData) {
                         const count = currentDataset.count;
                         if (count == 0) {
                             currentDataset.top = fields[0];
+                            currentDataset.bottom = fields[0];
                         } else if (count == 1) {
                             if (lasVersion == 2 && wellInfo.STEP.value == 0) {
                                 currentDataset.step = 0;
@@ -364,7 +365,12 @@ module.exports = async function (inputFile, importData) {
                             }
                             writeToCurveFile(currentDataset.buffers[curve.name.replace(/\[(.*?)\]/g, "")], fields[0], fields[i + 1], wellInfo.NULL.value);
                         });
-                        currentDataset.bottom = fields[0];
+                        if(fields[0] < currentDataset.top){
+                            currentDataset.top = fields[0];
+                        }
+                        if(fields[0] > currentDataset.bottom){
+                            currentDataset.bottom = fields[0];
+                        }
                         currentDataset.count++
                         lastDepth = fields[0]; //save last depth
                         fields = [];
@@ -417,9 +423,6 @@ module.exports = async function (inputFile, importData) {
                 dataset.unit = dataset.unit || wellInfo['STRT'].unit;
                 if (dataset.step < 0) {
                     dataset.step = (-datasetStep).toString();
-                    const tmp = dataset.top;
-                    dataset.top = dataset.bottom;
-                    dataset.bottom = tmp;
                 }
                 updateWellDepthRange(wellInfo, dataset);
                 wellInfo.datasets.push(dataset);

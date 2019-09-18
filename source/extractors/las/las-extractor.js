@@ -344,18 +344,19 @@ module.exports = async function (inputFile, importData) {
                     }
                     if (fields.length == currentDataset.curves.length + 1) {
                         const count = currentDataset.count;
+                        const _depth = parseFloat(fields[0]);
                         if (count == 0) {
-                            currentDataset.top = fields[0];
-                            currentDataset.bottom = fields[0];
+                            currentDataset.top = _depth;
+                            currentDataset.bottom = _depth;
                         } else if (count == 1) {
                             if (lasVersion == 2 && wellInfo.STEP.value == 0) {
                                 currentDataset.step = 0;
                             }
                             else {
-                                currentDataset.step = (fields[0] - lastDepth).toFixed(4);
+                                currentDataset.step = (_depth - lastDepth).toFixed(4);
                             }
                         } else {
-                            if (currentDataset.step != 0 && !isFloatEqually(fields[0] - lastDepth, currentDataset.step)) {
+                            if (currentDataset.step != 0 && !isFloatEqually(_depth - lastDepth, currentDataset.step)) {
                                 currentDataset.step = 0;
                             }
                         }
@@ -363,16 +364,16 @@ module.exports = async function (inputFile, importData) {
                             if(curve.type != "TEXT" && fields[i+1].includes('"')){
                                 curve.type = "TEXT";
                             }
-                            writeToCurveFile(currentDataset.buffers[curve.name.replace(/\[(.*?)\]/g, "")], fields[0], fields[i + 1], wellInfo.NULL.value);
+                            writeToCurveFile(currentDataset.buffers[curve.name.replace(/\[(.*?)\]/g, "")], _depth, fields[i + 1], wellInfo.NULL.value);
                         });
-                        if(fields[0] < currentDataset.top){
-                            currentDataset.top = fields[0];
+                        if(_depth < currentDataset.top){
+                            currentDataset.top = _depth;
                         }
-                        if(fields[0] > currentDataset.bottom){
-                            currentDataset.bottom = fields[0];
+                        if(_depth > currentDataset.bottom){
+                            currentDataset.bottom = _depth;
                         }
                         currentDataset.count++
-                        lastDepth = fields[0]; //save last depth
+                        lastDepth = _depth; //save last depth
                         fields = [];
                     }
                 }

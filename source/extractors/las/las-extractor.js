@@ -349,12 +349,7 @@ module.exports = async function (inputFile, importData) {
                             currentDataset.top = _depth;
                             currentDataset.bottom = _depth;
                         } else if (count == 1) {
-                            if (lasVersion == 2 && wellInfo.STEP.value == 0) {
-                                currentDataset.step = 0;
-                            }
-                            else {
-                                currentDataset.step = (_depth - lastDepth).toFixed(4);
-                            }
+                            currentDataset.step = (_depth - lastDepth).toFixed(4);
                         } else {
                             if (currentDataset.step != 0 && !isFloatEqually(_depth - lastDepth, currentDataset.step)) {
                                 currentDataset.step = 0;
